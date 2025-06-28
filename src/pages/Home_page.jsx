@@ -9,17 +9,17 @@ import { login } from '../store/slice/Auth.Slice';
 
 
 const Home_page = () => {
-    // const dispatch = useDispatch();
-    // useEffect(() => {
-    //     const verify = async () => {
-    //         try {
-    //             const response = await VerifyUser();
-    //             dispatch(login(response.user));
-    //         } catch (error) {
-    //         }
-    //     };
-    //     verify();
-    // }, [])
+    const dispatch = useDispatch();
+    useEffect(() => {
+        const verify = async () => {
+            try {
+                const response = await VerifyUser();
+                dispatch(login(response.user));
+            } catch (error) {
+            }
+        };
+        verify();
+    }, [])
 
     return (
         <>
