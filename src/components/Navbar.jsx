@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router';
 import { SignOutUser } from '../API/User.api';
+import { logout } from '../store/slice/Auth.Slice';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +10,7 @@ const Navbar = () => {
   const location = useLocation();
   const { isAuthenticated } = useSelector((state) => state.Auth);
   const state = isAuthenticated
+  const dispatch = useDispatch()
 
   
   // Handle scroll effect
@@ -28,6 +30,7 @@ const Navbar = () => {
   const handleSignOut = async () => {
     try {
       await SignOutUser();
+      dispatch(logout());
       window.location.reload();
     } catch (error) {
       console.log(error);
