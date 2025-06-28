@@ -52,8 +52,8 @@ const SignupForm = ({ state }) => {
         try {
             const { data } = await SignUp(name, Email, Password);
             dispatch(login(data.user));
-            setFormSubmitted(true);
             redirect('/dashboard');
+            setFormSubmitted(true);
         } catch (error) {
             console.log(
                 error.response.data.error
