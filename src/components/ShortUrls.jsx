@@ -47,7 +47,7 @@ const ShortUrls = () => {
   // Handle URL deletion with confirmation
   const handleDelete = async (id) => {
     try {
-      // setDeleteLoading(true);
+      setDeleteLoading(true);
       await DeleteUrl(id);
       // Refresh the URLs list
       await DeleteUrl();
