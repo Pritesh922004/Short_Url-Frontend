@@ -47,7 +47,7 @@ const SignupForm = ({state}) => {
         setIsLoading(true);
 
         try {
-            await SignUp(name, Email, Password);
+            const { data } = await SignUp(name, Email, Password);
             setFormSubmitted(true);
             redirect('/dashboard');
         } catch (error) {
