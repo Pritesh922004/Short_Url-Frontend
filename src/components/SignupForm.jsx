@@ -52,7 +52,6 @@ const SignupForm = ({ state }) => {
         try {
             const { data } = await SignUp(name, Email, Password);
             dispatch(login(data.user));
-
             setFormSubmitted(true);
             redirect('/dashboard');
         } catch (error) {
