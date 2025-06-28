@@ -47,7 +47,7 @@ const SignupForm = ({state}) => {
         setIsLoading(true);
 
         try {
-            const { data } = await SignUp(name, Email, Password);
+            await SignUp(name, Email, Password);
             setFormSubmitted(true);
             redirect('/dashboard');
         } catch (error) {
@@ -66,7 +66,7 @@ const SignupForm = ({state}) => {
     if (formSubmitted) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <div className="w-full relative my-auto max-w-md mx-auto p-8 bg-white rounded-xl shadow-lg animate-[fadeIn_0.5s_ease-in-out]">
+                <div className="w-full relative my-auto max-w-md mx-auto p-8 bg-white rounded-xl shadow-lg animate-[fadeIn_0.5s_ease-in-out] border-2 border-gray-200">
                     <div className="text-center">
                         <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                             <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

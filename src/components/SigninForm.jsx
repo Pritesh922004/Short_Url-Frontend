@@ -60,8 +60,8 @@ const SigninForm = ({state}) => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
-            <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-xl shadow-lg animate-[fadeIn_0.5s_ease-in-out] ">
+        <div className="flex items-center justify-center min-h-screen ">
+            <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-xl shadow-lg animate-[fadeIn_0.5s_ease-in-out] border-2 border-gray-200 ">
                 <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Sing In Your Account</h2>
 
                 {errors.general && (
