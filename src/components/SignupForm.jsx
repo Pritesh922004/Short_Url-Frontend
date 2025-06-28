@@ -17,8 +17,6 @@ const SignupForm = ({ state }) => {
 
     const validateForm = () => {
         const newErrors = {};
-        const dispatch = useDispatch();
-
         if (!name.trim()) {
             newErrors.name = 'name is required';
         } else if (name.length < 3) {
@@ -51,7 +49,6 @@ const SignupForm = ({ state }) => {
 
         try {
             const { data } = await SignUp(name, Email, Password);
-            dispatch(login(data.user));
             redirect('/dashboard');
             setFormSubmitted(true);
         } catch (error) {
