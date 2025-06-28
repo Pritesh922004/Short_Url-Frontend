@@ -5,7 +5,7 @@ import { SignIn } from '../API/User.api.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../store/slice/Auth.Slice.js';
 
-const SigninForm = ({state}) => {
+const SigninForm = ({ state }) => {
     const [Email, setEmail] = useState('');
     const [Password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
@@ -42,7 +42,7 @@ const SigninForm = ({state}) => {
         setIsLoading(true);
 
         try {
-            const data = await SignIn(Email, Password);
+            const { data } = await SignIn(Email, Password);
             dispatch(login(data.user));
             navigate('/dashboard');
             setFormSubmitted(true);
@@ -160,7 +160,7 @@ const SigninForm = ({state}) => {
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-600">
                         Don't have an account?{' '}
-                        <span onClick={()=> state(false)} className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-300 cursor-pointer select-none">
+                        <span onClick={() => state(false)} className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-300 cursor-pointer select-none">
                             Sign Up
                         </span>
                     </p>

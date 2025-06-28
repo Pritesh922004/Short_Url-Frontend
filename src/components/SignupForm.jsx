@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import axios from '../config/axios_instans.js';
 import { SignUp } from '../API/User.api.js';
+import { login } from '../store/slice/Auth.Slice.js';
+import { useDispatch } from 'react-redux';
 
-const SignupForm = ({state}) => {
+const SignupForm = ({ state }) => {
     const [name, setName] = useState('');
     const [Email, setEmail] = useState('');
     const [Password, setPassword] = useState('');
@@ -15,6 +17,7 @@ const SignupForm = ({state}) => {
 
     const validateForm = () => {
         const newErrors = {};
+        const dispatch = useDispatch();
 
         if (!name.trim()) {
             newErrors.name = 'name is required';
@@ -47,7 +50,9 @@ const SignupForm = ({state}) => {
         setIsLoading(true);
 
         try {
-            await SignUp(name, Email, Password);
+            const { data } = await SignUp(name, Email, Password);
+            dispatch(login(data.user));
+
             setFormSubmitted(true);
             redirect('/dashboard');
         } catch (error) {
@@ -213,7 +218,7 @@ const SignupForm = ({state}) => {
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-600">
                         Already have an account?{' '}
-                        <span onClick={()=> state(true)} className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-300 cursor-pointer">
+                        <span onClick={() => state(true)} className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-300 cursor-pointer">
                             Sign In
                         </span>
                     </p>
