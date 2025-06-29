@@ -117,6 +117,9 @@ const Navbar = () => {
             }`}>
               Dashboard
             </Link> 
+            <button onClick={handleSignOut} className="block w-full py-2 text-center rounded-lg border border-blue-600 text-blue-600">
+                Sign In
+              </button>
             </>
           )}
         </div>
