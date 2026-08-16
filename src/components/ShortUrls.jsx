@@ -14,13 +14,14 @@ const ShortUrls = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [qrModalUrl, setQrModalUrl] = useState(null);
 
   // Fetch URLs on component mount
   useEffect(() => {
     const loadUrls = async () => {
       try {
         setLoading(true);
-        const data  = await FetchUrls();
+        const data = await FetchUrls();
         dispatch(fetchUrls(data));
       } catch (err) {
         setError('Failed to load your URLs. Please try again later.');
@@ -50,7 +51,6 @@ const ShortUrls = () => {
       setDeleteLoading(true);
       await DeleteUrl(id);
       // Refresh the URLs list
-      await DeleteUrl();
       const data = await FetchUrls();
       dispatch(fetchUrls(data));
     } catch (err) {
@@ -63,14 +63,15 @@ const ShortUrls = () => {
   };
 
   // Filter and sort URLs
-  const filteredUrls = urls?.data?.filter(url =>
-    url.Url.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    url.Short_Url.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  const rawList = urls?.data || [];
+  const filteredUrls = rawList.filter(url =>
+    (url.Url || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (url.Short_Url || '').toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const sortedUrls = [...filteredUrls].sort((a, b) => {
     if (sortBy === 'clicks') {
-      return sortOrder === 'asc' ? a.Clicks - b.Clicks : b.Clicks - a.Clicks;
+      return sortOrder === 'asc' ? (a.Clicks || 0) - (b.Clicks || 0) : (b.Clicks || 0) - (a.Clicks || 0);
     } else if (sortBy === 'createdAt') {
       return sortOrder === 'asc'
         ? new Date(a.createdAt) - new Date(b.createdAt)
@@ -78,13 +79,22 @@ const ShortUrls = () => {
     } else {
       // Sort by short URL
       return sortOrder === 'asc'
-        ? a.Short_Url.localeCompare(b.Short_Url)
-        : b.Short_Url.localeCompare(a.Short_Url);
+        ? (a.Short_Url || '').localeCompare(b.Short_Url || '')
+        : (b.Short_Url || '').localeCompare(a.Short_Url || '');
     }
   });
 
+  // Analytics KPIs
+  const totalLinks = rawList.length;
+  const totalClicks = rawList.reduce((sum, item) => sum + (item.Clicks || 0), 0);
+  const topLink = rawList.length > 0
+    ? [...rawList].sort((a, b) => (b.Clicks || 0) - (a.Clicks || 0))[0]
+    : null;
+  const avgClicks = totalLinks > 0 ? (totalClicks / totalLinks).toFixed(1) : 0;
+
   // Format date for display
   const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -94,310 +104,470 @@ const ShortUrls = () => {
   };
 
   // Truncate long URLs for display
-  const truncateUrl = (url, maxLength = 50) => {
+  const truncateUrl = (url, maxLength = 45) => {
+    if (!url) return '';
     if (url.length <= maxLength) return url;
     return url.substring(0, maxLength) + '...';
   };
 
+  const getFullShortUrl = (shortSlug) => {
+    const domain = import.meta.env.VITE_Domain || window.location.origin + '/';
+    return domain.endsWith('/') ? domain + shortSlug : domain + '/' + shortSlug;
+  };
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex flex-col items-center justify-center p-12 bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+        <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+        <p className="mt-4 text-sm font-medium text-slate-500">Loading your links & analytics...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <p className="text-sm text-red-700">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!urls?.data || urls.data.length === 0) {
-    return (
-      <div className="text-center p-8 bg-gray-50 rounded-lg mt-5">
-        <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 flex items-start gap-3 my-4">
+        <svg className="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
-        <h3 className="mt-2 text-sm font-medium text-gray-900">No URLs found</h3>
-        <p className="mt-1 text-sm text-gray-500">Get started by creating a shortened URL.</p>
+        <div>
+          <h4 className="text-sm font-semibold">Error Loading Links</h4>
+          <p className="text-xs text-red-600 mt-0.5">{error}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      {/* Search and sort controls */}
-      <div className="p-4 border-b border-gray-200 bg-gray-50 sm:flex sm:items-center sm:justify-between">
-        <div className="relative flex-1 min-w-0 sm:mr-2">
-          <input
-            type="text"
-            placeholder="Search URLs..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="block w-full px-4 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-            <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-            </svg>
+    <div className="space-y-6">
+      {/* Analytics KPI Overview */}
+      {rawList.length > 0 && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Links</span>
+              <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+              </div>
+            </div>
+            <div className="mt-2 text-2xl font-bold text-slate-900">{totalLinks}</div>
+            <p className="mt-1 text-xs text-slate-500">Active shortened links</p>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Clicks</span>
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </div>
+            </div>
+            <div className="mt-2 text-2xl font-bold text-slate-900">{totalClicks}</div>
+            <p className="mt-1 text-xs text-slate-500">Across all destinations</p>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Top Performer</span>
+              <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+            </div>
+            <div className="mt-2 text-2xl font-bold text-slate-900">{topLink?.Clicks || 0} <span className="text-sm font-normal text-slate-500">clicks</span></div>
+            <p className="mt-1 text-xs text-slate-500 truncate" title={topLink?.Short_Url ? getFullShortUrl(topLink.Short_Url) : ''}>
+              {topLink?.Short_Url ? `/${topLink.Short_Url}` : 'None'}
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Avg Clicks / Link</span>
+              <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+            </div>
+            <div className="mt-2 text-2xl font-bold text-slate-900">{avgClicks}</div>
+            <p className="mt-1 text-xs text-slate-500">Average engagement</p>
           </div>
         </div>
-        <div className="mt-3 sm:mt-0 sm:ml-4 flex flex-col sm:flex-row sm:items-center">
-          <label htmlFor="sort" className="sr-only">Sort by</label>
-          <select
-            id="sort"
-            value={`${sortBy}-${sortOrder}`}
-            onChange={(e) => {
-              const [newSortBy, newSortOrder] = e.target.value.split('-');
-              setSortBy(newSortBy);
-              setSortOrder(newSortOrder);
-            }}
-            className="block w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          >
-            <option value="createdAt-desc">Newest first</option>
-            <option value="createdAt-asc">Oldest first</option>
-            <option value="clicks-desc">Most clicks</option>
-            <option value="clicks-asc">Least clicks</option>
-            <option value="shortUrl-asc">URL (A-Z)</option>
-            <option value="shortUrl-desc">URL (Z-A)</option>
-          </select>
+      )}
+
+      {/* Main Table / Links Container */}
+      <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
+        {/* Header Toolbar */}
+        <div className="p-4 sm:p-5 border-b border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="relative flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Search by destination URL or short alias..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="block w-full pl-9 pr-8 py-2 text-sm bg-white border border-slate-200 rounded-xl placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+            <label htmlFor="sort" className="text-xs font-semibold text-slate-500 whitespace-nowrap">Sort:</label>
+            <select
+              id="sort"
+              value={`${sortBy}-${sortOrder}`}
+              onChange={(e) => {
+                const [newSortBy, newSortOrder] = e.target.value.split('-');
+                setSortBy(newSortBy);
+                setSortOrder(newSortOrder);
+              }}
+              className="text-xs font-medium bg-white px-3 py-2 border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer text-slate-700"
+            >
+              <option value="createdAt-desc">Newest First</option>
+              <option value="createdAt-asc">Oldest First</option>
+              <option value="clicks-desc">Most Clicks</option>
+              <option value="clicks-asc">Least Clicks</option>
+              <option value="shortUrl-asc">Alias (A-Z)</option>
+              <option value="shortUrl-desc">Alias (Z-A)</option>
+            </select>
+          </div>
         </div>
-      </div>
 
-      {/* URLs list */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Original URL
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Short URL
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Clicks
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Created
-              </th>
-              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {sortedUrls.map((url) => (
-              <tr key={url._id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <div className="max-w-xs truncate" title={url.Url}>
-                    {truncateUrl(url.Url)}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
-                  {import.meta.env.VITE_Domain + url.Short_Url}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {url.Clicks}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatDate(url.createdAt)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={() => handleCopy(import.meta.env.VITE_Domain + url.Short_Url, url._id)}
-                      className={`inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded ${copiedId === url._id
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
-                        }`}
-                    >
-                      {copiedId === url._id ? (
-                        <>
-                          <svg className="mr-1.5 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          Copied
-                        </>
-                      ) : (
-                        <>
-                          <svg className="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                          </svg>
-                          Copy
-                        </>
-                      )}
-                    </button>
+        {/* Empty State */}
+        {rawList.length === 0 ? (
+          <div className="text-center py-16 px-4">
+            <div className="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+            </div>
+            <h3 className="text-base font-semibold text-slate-900">No links created yet</h3>
+            <p className="text-sm text-slate-500 max-w-sm mx-auto mt-1">
+              Shorten your first destination URL using the form above to start tracking clicks in real-time.
+            </p>
+          </div>
+        ) : filteredUrls.length === 0 ? (
+          <div className="text-center py-12 px-4">
+            <p className="text-sm font-medium text-slate-600">No URLs match "{searchTerm}"</p>
+            <button
+              onClick={() => setSearchTerm('')}
+              className="mt-2 text-xs font-semibold text-indigo-600 hover:text-indigo-800"
+            >
+              Clear search query
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="min-w-full divide-y divide-slate-200">
+                <thead className="bg-slate-50/80">
+                  <tr>
+                    <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Short Link
+                    </th>
+                    <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Original URL
+                    </th>
+                    <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Clicks
+                    </th>
+                    <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Created Date
+                    </th>
+                    <th scope="col" className="px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-slate-100">
+                  {sortedUrls.map((url) => {
+                    const fullShortUrl = getFullShortUrl(url.Short_Url);
+                    const isCopied = copiedId === url._id;
 
-                    <a
-                      href={import.meta.env.VITE_Domain + url.Short_Url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded bg-indigo-100 text-indigo-800 hover:bg-indigo-200"
-                    >
-                      <svg className="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                      Open
-                    </a>
+                    return (
+                      <tr key={url._id} className="hover:bg-slate-50/70 transition-colors group">
+                        {/* Short URL */}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+                              /{url.Short_Url}
+                            </span>
+                            <button
+                              onClick={() => handleCopy(fullShortUrl, url._id)}
+                              className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
+                                isCopied ? 'bg-emerald-100 text-emerald-700' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                              }`}
+                              title={isCopied ? 'Copied!' : 'Copy to clipboard'}
+                            >
+                              {isCopied ? (
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                              ) : (
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                              )}
+                            </button>
+                          </div>
+                        </td>
 
-                    <button
-                      onClick={() => setDeleteConfirm(url._id)}
-                      className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded bg-red-100 text-red-800 hover:bg-red-200"
-                    >
-                      <svg className="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                        {/* Original URL */}
+                        <td className="px-6 py-4 text-sm text-slate-500 max-w-xs">
+                          <div className="truncate flex items-center gap-1.5" title={url.Url}>
+                            <svg className="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            <span className="truncate">{url.Url}</span>
+                          </div>
+                        </td>
 
-      {/* Mobile view for small screens */}
-      <div className="sm:hidden">
-        <ul className="divide-y divide-gray-200">
-          {sortedUrls.map((url) => (
-            <li key={url._id} className="px-4 py-4">
-              <div className="flex items-center justify-between">
-                <div className="truncate">
-                  <div className="text-sm font-medium text-blue-600 truncate">
-                    {import.meta.env.VITE_Domain + url.Short_Url}
-                  </div>
-                  <div className="text-sm text-gray-500 truncate" title={url.Url}>
-                    {truncateUrl(url.Url, 30)}
-                  </div>
-                </div>
-                <div className="ml-2 flex-shrink-0 flex">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    {url.Clicks} clicks
-                  </span>
-                </div>
-              </div>
-              <div className="mt-2 flex justify-between">
-                <div className="text-sm text-gray-500">
-                  {formatDate(url.createdAt)}
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleCopy(import.meta.env.VITE_Domain + url.Short_Url, url._id)}
-                    className={`inline-flex items-center p-1 border border-transparent rounded-full ${copiedId === url._id ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-                      }`}
-                  >
-                    {copiedId === url._id ? (
-                      <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    ) : (
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                      </svg>
-                    )}
-                  </button>
+                        {/* Clicks */}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700">
+                            {url.Clicks || 0} clicks
+                          </span>
+                        </td>
 
-                  <a
-                    href={import.meta.env.VITE_Domain + url.Short_Url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center p-1 border border-transparent rounded-full bg-gray-100 text-gray-600"
-                  >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
+                        {/* Created Date */}
+                        <td className="px-6 py-4 whitespace-nowrap text-xs text-slate-500 font-medium">
+                          {formatDate(url.createdAt)}
+                        </td>
 
-                  <button
-                    onClick={() => setDeleteConfirm(url._id)}
-                    className="inline-flex items-center p-1 border border-transparent rounded-full bg-gray-100 text-gray-600"
-                  >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+                        {/* Action buttons */}
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                          <div className="flex items-center justify-end gap-1.5">
+                            {/* QR Modal Trigger */}
+                            <button
+                              onClick={() => setQrModalUrl(fullShortUrl)}
+                              className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
+                              title="Show QR Code"
+                            >
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                              </svg>
+                            </button>
 
-      {/* Delete confirmation modal */}
-      {deleteConfirm && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            {/* Background overlay */}
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                            {/* Open in new tab */}
+                            <a
+                              href={fullShortUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              title="Open link"
+                            >
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+
+                            {/* Delete button */}
+                            <button
+                              onClick={() => setDeleteConfirm(url._id)}
+                              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                              title="Delete short URL"
+                            >
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
 
-            {/* Modal positioning helper */}
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            {/* Mobile Cards View */}
+            <div className="md:hidden divide-y divide-slate-100">
+              {sortedUrls.map((url) => {
+                const fullShortUrl = getFullShortUrl(url.Short_Url);
+                const isCopied = copiedId === url._id;
 
-            {/* Modal content */}
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                  </div>
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Delete URL</h3>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        Are you sure you want to delete this shortened URL? This action cannot be undone.
-                      </p>
+                return (
+                  <div key={url._id} className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="font-semibold text-sm text-indigo-600">
+                        /{url.Short_Url}
+                      </div>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700">
+                        {url.Clicks || 0} clicks
+                      </span>
+                    </div>
+
+                    <div className="text-xs text-slate-500 truncate" title={url.Url}>
+                      {truncateUrl(url.Url, 40)}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 text-xs text-slate-400">
+                      <span>{formatDate(url.createdAt)}</span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleCopy(fullShortUrl, url._id)}
+                          className={`px-2 py-1 rounded-md text-xs font-medium transition-colors ${
+                            isCopied ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'
+                          }`}
+                        >
+                          {isCopied ? 'Copied' : 'Copy'}
+                        </button>
+                        <button
+                          onClick={() => setQrModalUrl(fullShortUrl)}
+                          className="p-1 bg-slate-100 text-slate-700 rounded-md"
+                          title="QR Code"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                          </svg>
+                        </button>
+                        <a
+                          href={fullShortUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1 bg-slate-100 text-slate-700 rounded-md"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                        <button
+                          onClick={() => setDeleteConfirm(url._id)}
+                          className="p-1 bg-red-50 text-red-600 rounded-md"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* QR Code Popup Modal */}
+      {qrModalUrl && (
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+            onClick={() => setQrModalUrl(null)}
+          ></div>
+          <div className="relative bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 animate-fade-in text-center z-10">
+            <button
+              onClick={() => setQrModalUrl(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <h3 className="text-base font-bold text-slate-900 mb-1">QR Code</h3>
+            <p className="text-xs text-slate-500 mb-4 truncate">{qrModalUrl}</p>
+
+            <div className="inline-block p-3 bg-white rounded-xl shadow-xs border border-slate-200">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrModalUrl)}`}
+                alt="QR Code"
+                className="w-48 h-48 mx-auto rounded-lg"
+              />
+            </div>
+
+            <p className="text-xs text-slate-400 mt-4">Scan with your smartphone camera to visit link</p>
+
+            <div className="mt-5 flex gap-2">
+              <button
+                onClick={async () => {
+                  await navigator.clipboard.writeText(qrModalUrl);
+                  alert('Short link copied to clipboard!');
+                }}
+                className="flex-1 py-2.5 px-4 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors cursor-pointer"
+              >
+                Copy Link
+              </button>
+              <button
+                onClick={() => setQrModalUrl(null)}
+                className="py-2.5 px-4 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+            onClick={() => !deleteLoading && setDeleteConfirm(null)}
+          ></div>
+          <div className="relative bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-fade-in z-10">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button
-                  type="button"
-                  onClick={() => handleDelete(deleteConfirm)}
-                  disabled={deleteLoading}
-                  className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm ${deleteLoading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'
-                    }`}
-                >
-                  {deleteLoading ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Deleting...
-                    </>
-                  ) : (
-                    'Delete'
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDeleteConfirm(null)}
-                  disabled={deleteLoading}
-                  className={`mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm ${deleteLoading ? 'cursor-not-allowed' : 'cursor-pointer'
-                    }`}
-                >
-                  Cancel
-                </button>
+              <div className="flex-1">
+                <h3 className="text-base font-bold text-slate-900">Delete Shortened Link</h3>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Are you sure you want to delete this shortened URL? Anyone visiting this link will no longer be redirected.
+                </p>
               </div>
+            </div>
+
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirm(null)}
+                disabled={deleteLoading}
+                className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDelete(deleteConfirm)}
+                disabled={deleteLoading}
+                className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 shadow-sm shadow-red-500/20 transition-all disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
+              >
+                {deleteLoading ? (
+                  <>
+                    <svg className="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  'Delete Link'
+                )}
+              </button>
             </div>
           </div>
         </div>

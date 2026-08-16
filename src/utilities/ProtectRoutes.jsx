@@ -13,7 +13,6 @@ const ProtectedRoutes = () => {
     const location = useLocation();
 
     useEffect(() => {
-
         const verifyAuth = async () => {
             try {
                 setLoading(true);
@@ -21,9 +20,7 @@ const ProtectedRoutes = () => {
                 const response = await VerifyUser();
 
                 if (response && response.user) {
-
                     dispatch(login(response.user));
-
                 }
 
                 const { data } = await FetchUrls();
@@ -40,8 +37,9 @@ const ProtectedRoutes = () => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+                <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                <p className="mt-4 text-xs font-medium text-slate-500">Authenticating session...</p>
             </div>
         );
     }
@@ -49,7 +47,6 @@ const ProtectedRoutes = () => {
     return isAuthenticated ?
         <Outlet /> :
         <Navigate to="/auth" state={{ from: location }} replace />;
-
 };
 
-export default ProtectedRoutes;
+export default ProtectedRoutes;
