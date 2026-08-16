@@ -40,9 +40,6 @@ const Footer = () => {
                                 <Link to="/features" className="hover:text-indigo-600 transition-colors">Features</Link>
                             </li>
                             <li>
-                                <Link to="/pricing" className="hover:text-indigo-600 transition-colors">Pricing Plans</Link>
-                            </li>
-                            <li>
                                 <Link to="/dashboard" className="hover:text-indigo-600 transition-colors">Link Dashboard</Link>
                             </li>
                         </ul>
@@ -81,7 +78,12 @@ const Footer = () => {
                                 <Link to="/faq" className="hover:text-indigo-600 transition-colors">Terms of Service</Link>
                             </li>
                             <li>
-                                <Link to="/faq" className="hover:text-indigo-600 transition-colors">API Docs</Link>
+                                <Link to="/admin/login" className="hover:text-indigo-600 transition-colors flex items-center gap-1 font-semibold text-indigo-600">
+                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    <span>Admin Portal</span>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -98,11 +100,17 @@ const Footer = () => {
                         <span>&bull;</span>
                         <Link to="/faq" className="hover:text-indigo-600 transition-colors">Terms</Link>
                         <span>&bull;</span>
-                        <Link to="/faq" className="hover:text-indigo-600 transition-colors">Cookies</Link>
-                        <span>&bull;</span>
                         <Link to="/faq" className="hover:text-indigo-600 transition-colors">Support</Link>
+                        <span>&bull;</span>
+                        <Link to="/admin/login" className="hover:text-indigo-600 transition-colors flex items-center gap-1 font-semibold text-slate-600 hover:text-indigo-600" title="Admin Portal">
+                            <svg className="w-3.5 h-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            <span>Admin</span>
+                        </Link>
                     </div>
                 </div>
+
             </div>
         </footer>
     );

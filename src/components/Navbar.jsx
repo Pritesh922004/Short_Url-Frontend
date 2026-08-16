@@ -231,14 +231,6 @@ const Navbar = () => {
             Features
           </Link>
           <Link
-            to="/pricing"
-            className={`block py-2 px-3.5 rounded-xl text-xs font-semibold ${
-              location.pathname === '/pricing' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-slate-700 hover:bg-slate-100'
-            }`}
-          >
-            Pricing
-          </Link>
-          <Link
             to="/faq"
             className={`block py-2 px-3.5 rounded-xl text-xs font-semibold ${
               location.pathname === '/faq' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-slate-700 hover:bg-slate-100'
@@ -246,6 +238,7 @@ const Navbar = () => {
           >
             FAQ
           </Link>
+
 
           {!state ? (
             <div className="pt-2">
