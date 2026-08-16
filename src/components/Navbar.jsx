@@ -29,12 +29,15 @@ const Navbar = () => {
   const handleSignOut = async () => {
     try {
       await SignOutUser();
-      dispatch(logout());
-      window.location.reload();
     } catch (error) {
       console.log(error);
+    } finally {
+      localStorage.removeItem('token');
+      dispatch(logout());
+      window.location.reload();
     }
   };
+
 
   const getInitial = () => {
     if (user?.name) return user.name.charAt(0).toUpperCase();

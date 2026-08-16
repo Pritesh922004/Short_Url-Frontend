@@ -44,8 +44,12 @@ const SignupForm = ({ state }) => {
         setIsLoading(true);
 
         try {
-            await SignUp(name, Email, Password);
+            const { data } = await SignUp(name, Email, Password);
+            if (data?.token) {
+                localStorage.setItem('token', data.token);
+            }
             setFormSubmitted(true);
+
         } catch (error) {
             console.log(error?.response?.data?.error);
             setErrors({

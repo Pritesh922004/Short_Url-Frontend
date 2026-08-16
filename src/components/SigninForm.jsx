@@ -40,8 +40,12 @@ const SigninForm = ({ state }) => {
 
         try {
             const { data } = await SignIn(Email, Password);
+            if (data?.token) {
+                localStorage.setItem('token', data.token);
+            }
             dispatch(login(data.user));
             navigate('/dashboard');
+
         } catch (error) {
             console.log(error?.response?.data?.error);
             setErrors({

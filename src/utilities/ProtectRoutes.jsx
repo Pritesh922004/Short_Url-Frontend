@@ -21,19 +21,26 @@ const ProtectedRoutes = () => {
 
                 if (response && response.user) {
                     dispatch(login(response.user));
+                    try {
+                        const { data } = await FetchUrls();
+                        dispatch(fetchUrls(data));
+                    } catch (fetchError) {
+                        console.error("Error fetching URLs:", fetchError);
+                    }
+                } else {
+                    localStorage.removeItem('token');
                 }
-
-                const { data } = await FetchUrls();
-                dispatch(fetchUrls(data));
 
             } catch (error) {
                 console.error("Authentication error:", error);
+                localStorage.removeItem('token');
             } finally {
                 setLoading(false);
             }
         };
         verifyAuth();
     }, [dispatch]);
+
 
     if (loading) {
         return (
