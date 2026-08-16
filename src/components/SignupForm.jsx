@@ -74,11 +74,12 @@ const SignupForm = ({ state }) => {
                         Your account has been created successfully. You can now sign in to start creating branded links and tracking clicks.
                     </p>
                     <button
-                        onClick={() => state(true)}
+                        onClick={() => state('signin')}
                         className="w-full py-3.5 px-6 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 cursor-pointer"
                     >
                         Sign In to Your Account
                     </button>
+
                 </div>
             </div>
         );
@@ -242,7 +243,7 @@ const SignupForm = ({ state }) => {
                         Already have an account?{' '}
                         <button
                             type="button"
-                            onClick={() => state(true)}
+                            onClick={() => state('signin')}
                             className="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors cursor-pointer"
                         >
                             Sign In
@@ -254,4 +255,4 @@ const SignupForm = ({ state }) => {
     );
 };
 
-export default SignupForm;
+export default SignupForm;

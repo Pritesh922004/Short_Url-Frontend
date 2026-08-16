@@ -29,6 +29,8 @@ const App = () => {
       {/* User Auth */}
       <Route element={<NoNavbar />}>
         <Route path='/auth' element={<Auth_page />} />
+        <Route path='/forgot-password' element={<Auth_page defaultView="forgot" />} />
+        <Route path='/reset-password' element={<Auth_page defaultView="forgot" />} />
       </Route>
 
       {/* Public & User Protected Routes */}
