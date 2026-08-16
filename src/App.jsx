@@ -12,12 +12,26 @@ import ProtectedRoutes from './utilities/ProtectRoutes.jsx';
 import NoNavbar from './utilities/NoNavbar.jsx';
 import NavbarRoutes from './utilities/NavbarRoutes.jsx';
 
+import AdminLogin from './admin/AdminLogin.jsx';
+import AdminDashboard from './admin/AdminDashboard.jsx';
+import AdminProtectRoute from './admin/AdminProtectRoute.jsx';
+
 const App = () => {
   return (
     <Routes>
+      {/* Admin Routes */}
+      <Route path='/admin/login' element={<AdminLogin />} />
+      <Route element={<AdminProtectRoute />}>
+        <Route path='/admin' element={<AdminDashboard />} />
+        <Route path='/admin/dashboard' element={<AdminDashboard />} />
+      </Route>
+
+      {/* User Auth */}
       <Route element={<NoNavbar />}>
         <Route path='/auth' element={<Auth_page />} />
       </Route>
+
+      {/* Public & User Protected Routes */}
       <Route element={<NavbarRoutes />}>
         <Route path='/' element={<Home_page />} />
         <Route path='/features' element={<Features_page />} />
