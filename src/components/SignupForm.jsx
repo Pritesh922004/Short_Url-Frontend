@@ -1,17 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router';
-import { SignUp } from '../API/User.api.js';
+import { SignUp, SendSignupOtpApi } from '../API/User.api.js';
 
 const SignupForm = ({ state }) => {
+    // Form fields
     const [name, setName] = useState('');
     const [Email, setEmail] = useState('');
     const [Password, setPassword] = useState('');
+    const [otp, setOtp] = useState(['', '', '', '', '', '']);
+
+    // UI state: step 1 (Details) | step 2 (OTP Verification)
+    const [step, setStep] = useState(1);
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
 
-    const validateForm = () => {
+    // Resend Timer State
+    const [timer, setTimer] = useState(60);
+    const [canResend, setCanResend] = useState(false);
+    const otpInputRefs = useRef([]);
+
+    // Resend countdown timer effect
+    useEffect(() => {
+        let interval = null;
+        if (step === 2 && timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prevTimer) => prevTimer - 1);
+            }, 1000);
+        } else if (timer === 0) {
+            setCanResend(true);
+            if (interval) clearInterval(interval);
+        }
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [step, timer]);
+
+    const validateStep1 = () => {
         const newErrors = {};
         if (!name.trim()) {
             newErrors.name = 'Full name is required';
@@ -37,21 +63,105 @@ const SignupForm = ({ state }) => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    // Handle Step 1 Submit (Send OTP)
+    const handleSendOtp = async (e) => {
+        if (e) e.preventDefault();
+        if (!validateStep1()) return;
 
-        if (!validateForm()) return;
         setIsLoading(true);
+        setErrors({});
 
         try {
-            const { data } = await SignUp(name, Email, Password);
+            await SendSignupOtpApi(Email);
+            setStep(2);
+            setTimer(60);
+            setCanResend(false);
+        } catch (error) {
+            console.error(error?.response?.data?.error);
+            setErrors({
+                general: error?.response?.data?.error || 'Failed to send verification code. Please try again.'
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Handle Resend OTP
+    const handleResendOtp = async () => {
+        if (!canResend || isLoading) return;
+        setIsLoading(true);
+        setErrors({});
+
+        try {
+            await SendSignupOtpApi(Email);
+            setTimer(60);
+            setCanResend(false);
+            setOtp(['', '', '', '', '', '']);
+            if (otpInputRefs.current[0]) {
+                otpInputRefs.current[0].focus();
+            }
+        } catch (error) {
+            setErrors({
+                general: error?.response?.data?.error || 'Failed to resend code. Please try again.'
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Handle OTP Box Input Change
+    const handleOtpChange = (index, value) => {
+        if (isNaN(value)) return;
+
+        const newOtp = [...otp];
+        newOtp[index] = value.substring(value.length - 1);
+        setOtp(newOtp);
+
+        // Auto focus next box
+        if (value && index < 5 && otpInputRefs.current[index + 1]) {
+            otpInputRefs.current[index + 1].focus();
+        }
+    };
+
+    const handleOtpKeyDown = (index, e) => {
+        if (e.key === 'Backspace' && !otp[index] && index > 0 && otpInputRefs.current[index - 1]) {
+            otpInputRefs.current[index - 1].focus();
+        }
+    };
+
+    const handleOtpPaste = (e) => {
+        e.preventDefault();
+        const pasteData = e.clipboardData.getData('text').trim();
+        if (/^\d{6}$/.test(pasteData)) {
+            const pasteArray = pasteData.split('');
+            setOtp(pasteArray);
+            if (otpInputRefs.current[5]) {
+                otpInputRefs.current[5].focus();
+            }
+        }
+    };
+
+    // Handle Final Step 2 Submit (Create Account with OTP)
+    const handleCompleteSignup = async (e) => {
+        e.preventDefault();
+        const fullOtp = otp.join('');
+
+        if (fullOtp.length !== 6) {
+            setErrors({ otp: 'Please enter all 6 digits of the verification code.' });
+            return;
+        }
+
+        setIsLoading(true);
+        setErrors({});
+
+        try {
+            const { data } = await SignUp(name, Email, Password, fullOtp);
             if (data?.token) {
                 localStorage.setItem('token', data.token);
             }
             setFormSubmitted(true);
-
         } catch (error) {
-            console.log(error?.response?.data?.error);
+            console.error(error?.response?.data?.error);
             setErrors({
                 general: error?.response?.data?.error || 'Failed to create account. Please try again.'
             });
@@ -60,6 +170,7 @@ const SignupForm = ({ state }) => {
         }
     };
 
+    // Success Screen
     if (formSubmitted) {
         return (
             <div className="w-full max-w-md mx-auto">
@@ -69,9 +180,9 @@ const SignupForm = ({ state }) => {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path>
                         </svg>
                     </div>
-                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Account Created!</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Account Verified & Created!</h2>
                     <p className="text-xs text-slate-500 mb-6 leading-relaxed">
-                        Your account has been created successfully. You can now sign in to start creating branded links and tracking clicks.
+                        Your email address has been verified successfully. You can now sign in to start creating custom branded links.
                     </p>
                     <button
                         onClick={() => state('signin')}
@@ -79,7 +190,6 @@ const SignupForm = ({ state }) => {
                     >
                         Sign In to Your Account
                     </button>
-
                 </div>
             </div>
         );
@@ -99,13 +209,37 @@ const SignupForm = ({ state }) => {
                         <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-700 bg-clip-text text-transparent">
                             LinkVault
                         </span>
-
                     </Link>
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-900">Create an Account</h2>
-                    <p className="text-xs text-slate-500 mt-1.5">Get custom links, QR codes, and real-time click tracking</p>
+
+                    {step === 1 ? (
+                        <>
+                            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Create an Account</h2>
+                            <p className="text-xs text-slate-500 mt-1.5">Get custom links, QR codes, and real-time click tracking</p>
+                        </>
+                    ) : (
+                        <>
+                            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Verify Your Email</h2>
+                            <p className="text-xs text-slate-500 mt-1.5">
+                                We sent a 6-digit verification code to
+                            </p>
+                            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 border border-indigo-100 rounded-full text-indigo-700 text-xs font-semibold">
+                                <span>{Email}</span>
+                                <button
+                                    type="button"
+                                    onClick={() => setStep(1)}
+                                    className="text-indigo-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                                    title="Edit Email"
+                                >
+                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </div>
 
-                {/* Error Banner */}
+                {/* General Error Banner */}
                 {errors.general && (
                     <div className="mb-5 p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-start gap-2.5 animate-fade-in">
                         <svg className="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -115,127 +249,209 @@ const SignupForm = ({ state }) => {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Full Name */}
-                    <div className="space-y-1.5">
-                        <label htmlFor="name" className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                            Full Name
-                        </label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
+                {step === 1 ? (
+                    /* Step 1: Registration Input Form */
+                    <form onSubmit={handleSendOtp} className="space-y-4">
+                        {/* Full Name */}
+                        <div className="space-y-1.5">
+                            <label htmlFor="name" className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
+                                Full Name
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    id="name"
+                                    name="name"
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className={`block w-full pl-10 pr-3.5 py-3 bg-slate-50/70 hover:bg-slate-50 border ${
+                                        errors.name ? 'border-red-400 focus:ring-red-200' : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-500'
+                                    } rounded-xl text-sm placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 transition-all`}
+                                    placeholder="Jane Doe"
+                                />
                             </div>
-                            <input
-                                id="name"
-                                name="name"
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className={`block w-full pl-10 pr-3.5 py-3 bg-slate-50/70 hover:bg-slate-50 border ${
-                                    errors.name ? 'border-red-400 focus:ring-red-200' : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-500'
-                                } rounded-xl text-sm placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 transition-all`}
-                                placeholder="Jane Doe"
-                            />
+                            {errors.name && (
+                                <p className="text-xs text-red-600 font-medium animate-fade-in">{errors.name}</p>
+                            )}
                         </div>
-                        {errors.name && (
-                            <p className="text-xs text-red-600 font-medium animate-fade-in">{errors.name}</p>
-                        )}
-                    </div>
 
-                    {/* Email */}
-                    <div className="space-y-1.5">
-                        <label htmlFor="signup-email" className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                            Email Address
-                        </label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" />
-                                </svg>
+                        {/* Email */}
+                        <div className="space-y-1.5">
+                            <label htmlFor="signup-email" className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
+                                Email Address
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" />
+                                    </svg>
+                                </div>
+                                <input
+                                    id="signup-email"
+                                    name="Email"
+                                    type="email"
+                                    value={Email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className={`block w-full pl-10 pr-3.5 py-3 bg-slate-50/70 hover:bg-slate-50 border ${
+                                        errors.Email ? 'border-red-400 focus:ring-red-200' : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-500'
+                                    } rounded-xl text-sm placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 transition-all`}
+                                    placeholder="you@example.com"
+                                />
                             </div>
-                            <input
-                                id="signup-email"
-                                name="Email"
-                                type="email"
-                                value={Email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className={`block w-full pl-10 pr-3.5 py-3 bg-slate-50/70 hover:bg-slate-50 border ${
-                                    errors.Email ? 'border-red-400 focus:ring-red-200' : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-500'
-                                } rounded-xl text-sm placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 transition-all`}
-                                placeholder="you@example.com"
-                            />
+                            {errors.Email && (
+                                <p className="text-xs text-red-600 font-medium animate-fade-in">{errors.Email}</p>
+                            )}
                         </div>
-                        {errors.Email && (
-                            <p className="text-xs text-red-600 font-medium animate-fade-in">{errors.Email}</p>
-                        )}
-                    </div>
 
-                    {/* Password */}
-                    <div className="space-y-1.5">
-                        <label htmlFor="signup-password" className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                            Password
-                        </label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
+                        {/* Password */}
+                        <div className="space-y-1.5">
+                            <label htmlFor="signup-password" className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    id="signup-password"
+                                    name="Password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={Password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className={`block w-full pl-10 pr-10 py-3 bg-slate-50/70 hover:bg-slate-50 border ${
+                                        errors.Password ? 'border-red-400 focus:ring-red-200' : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-500'
+                                    } rounded-xl text-sm placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 transition-all`}
+                                    placeholder="••••••••"
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    aria-label="Toggle password visibility"
+                                >
+                                    {showPassword ? (
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                        </svg>
+                                    ) : (
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    )}
+                                </button>
                             </div>
-                            <input
-                                id="signup-password"
-                                name="Password"
-                                type={showPassword ? 'text' : 'password'}
-                                value={Password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className={`block w-full pl-10 pr-10 py-3 bg-slate-50/70 hover:bg-slate-50 border ${
-                                    errors.Password ? 'border-red-400 focus:ring-red-200' : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-500'
-                                } rounded-xl text-sm placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 transition-all`}
-                                placeholder="••••••••"
-                            />
+                            {errors.Password && (
+                                <p className="text-xs text-red-600 font-medium animate-fade-in">{errors.Password}</p>
+                            )}
+                        </div>
+
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full mt-2 py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 cursor-pointer"
+                        >
+                            {isLoading ? (
+                                <>
+                                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span>Sending Code...</span>
+                                </>
+                            ) : (
+                                <span>Continue with Email</span>
+                            )}
+                        </button>
+                    </form>
+                ) : (
+                    /* Step 2: OTP Verification Form */
+                    <form onSubmit={handleCompleteSignup} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 text-center">
+                                Enter 6-Digit Code
+                            </label>
+
+                            {/* 6 Digit Input Boxes */}
+                            <div className="flex justify-between items-center gap-2 max-w-xs mx-auto">
+                                {otp.map((digit, index) => (
+                                    <input
+                                        key={index}
+                                        ref={(el) => (otpInputRefs.current[index] = el)}
+                                        type="text"
+                                        inputMode="numeric"
+                                        maxLength="1"
+                                        value={digit}
+                                        onChange={(e) => handleOtpChange(index, e.target.value)}
+                                        onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                                        onPaste={handleOtpPaste}
+                                        className="w-11 h-13 text-center text-xl font-bold rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 outline-none transition-all shadow-sm"
+                                    />
+                                ))}
+                            </div>
+
+                            {errors.otp && (
+                                <p className="text-xs text-red-600 font-medium text-center animate-fade-in">{errors.otp}</p>
+                            )}
+                        </div>
+
+                        {/* Cooldown & Resend Row */}
+                        <div className="text-center">
+                            <p className="text-xs text-slate-500">
+                                Didn't receive the code?{' '}
+                                <button
+                                    type="button"
+                                    onClick={handleResendOtp}
+                                    disabled={!canResend || isLoading}
+                                    className={`font-semibold transition-colors ${
+                                        canResend && !isLoading
+                                            ? 'text-indigo-600 hover:text-indigo-800 cursor-pointer'
+                                            : 'text-slate-400 cursor-not-allowed'
+                                    }`}
+                                >
+                                    {canResend ? 'Resend Code' : `Resend in ${timer}s`}
+                                </button>
+                            </p>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="space-y-2.5">
                             <button
-                                type="button"
-                                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
-                                onClick={() => setShowPassword(!showPassword)}
-                                aria-label="Toggle password visibility"
+                                type="submit"
+                                disabled={isLoading || otp.join('').length !== 6}
+                                className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 cursor-pointer"
                             >
-                                {showPassword ? (
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                                    </svg>
+                                {isLoading ? (
+                                    <>
+                                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <span>Verifying & Creating Account...</span>
+                                    </>
                                 ) : (
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
+                                    <span>Verify & Create Account</span>
                                 )}
                             </button>
-                        </div>
-                        {errors.Password && (
-                            <p className="text-xs text-red-600 font-medium animate-fade-in">{errors.Password}</p>
-                        )}
-                    </div>
 
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full mt-2 py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 cursor-pointer"
-                    >
-                        {isLoading ? (
-                            <>
-                                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                <span>Creating Account...</span>
-                            </>
-                        ) : (
-                            <span>Create Account</span>
-                        )}
-                    </button>
-                </form>
+                            <button
+                                type="button"
+                                onClick={() => setStep(1)}
+                                className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-xs transition-colors cursor-pointer"
+                            >
+                                Back to Details
+                            </button>
+                        </div>
+                    </form>
+                )}
 
                 {/* Footer Switch */}
                 <div className="mt-8 pt-6 border-t border-slate-100 text-center">
@@ -255,4 +471,4 @@ const SignupForm = ({ state }) => {
     );
 };
 
-export default SignupForm;
+export default SignupForm;
