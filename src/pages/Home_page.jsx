@@ -4,6 +4,7 @@ import { VerifyUser } from '../API/User.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../store/slice/Auth.Slice';
 import { Link } from 'react-router';
+import SEO from '../components/SEO';
 
 const Home_page = () => {
     const dispatch = useDispatch();

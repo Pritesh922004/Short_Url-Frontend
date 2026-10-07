@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import ShortUrlFrom from '../components/ShortUrlFrom';
 import ShortUrls from '../components/ShortUrls';
+import SEO from '../components/SEO';
 
 const Dashboard = () => {
     const { user } = useSelector((state) => state.Auth);

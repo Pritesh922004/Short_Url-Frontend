@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AiCodeReviewer from '../components/AiCodeReviewer';
 import AiDocTranslator from '../components/AiDocTranslator';
+import SEO from '../components/SEO';
 
 const AiTools_page = () => {
   const [activeTool, setActiveTool] = useState('code-review'); // 'code-review' | 'translator'
 
   return (
-    <div className="min-h-screen bg-slate-50/50 py-6 sm:py-10 px-3 sm:px-6 lg:px-8 overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50/50 py-6 sm:py-10 px-3 sm:px-6 lg:px-8 overflow-x-hidden">`n      <SEO title="AI Hub - Code Review & Translation" description="Supercharge your productivity with LinkVault AI Hub. Instantly review code and translate PDF documents." />
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
