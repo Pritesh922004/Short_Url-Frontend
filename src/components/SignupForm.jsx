@@ -174,7 +174,7 @@ const SignupForm = ({ state }) => {
     if (formSubmitted) {
         return (
             <div className="w-full max-w-md mx-auto">
-                <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/70 border border-slate-200/80 p-8 sm:p-10 text-center animate-fade-in backdrop-blur-sm">
+                <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/70 border border-slate-200/80 p-8 sm:p-10 text-center animate-fade-in ">
                     <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-emerald-100 text-emerald-600 mb-5">
                         <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path>
@@ -197,7 +197,7 @@ const SignupForm = ({ state }) => {
 
     return (
         <div className="w-full max-w-md mx-auto">
-            <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/70 border border-slate-200/80 p-8 sm:p-10 animate-fade-in backdrop-blur-sm">
+            <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/70 border border-slate-200/80 p-8 sm:p-10 animate-fade-in ">
                 {/* Header */}
                 <div className="text-center mb-8">
                     <Link to="/" className="inline-flex items-center gap-2 mb-4 group">

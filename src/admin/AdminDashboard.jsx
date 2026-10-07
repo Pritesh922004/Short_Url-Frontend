@@ -52,6 +52,7 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleLogout = async () => {
@@ -117,7 +118,7 @@ const AdminDashboard = () => {
     return (
         <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white">
             {/* Top Admin Navigation Bar */}
-            <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-lg">
+            <header className="sticky top-0 z-40 bg-slate-900/90  border-b border-slate-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-lg">
                 <div className="flex items-center gap-3">
                     <Link to="/" className="flex items-center gap-2.5 group">
                         <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-blue-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
@@ -314,7 +315,7 @@ const AdminDashboard = () => {
 
                                         <div className="space-y-3">
                                             {stats?.topUrls && stats.topUrls.length > 0 ? (
-                                                stats.topUrls.map((item, idx) => (
+                                                stats.topUrls.map((item) => (
                                                     <div
                                                         key={item._id}
                                                         className="p-3.5 bg-slate-950/70 border border-slate-800/80 rounded-xl flex items-center justify-between gap-3"
@@ -636,7 +637,7 @@ const AdminDashboard = () => {
 
             {/* QR Code Modal */}
             {qrModalUrl && (
-                <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+                <div className="fixed inset-0 z-50 bg-black/80  flex items-center justify-center p-4 animate-fade-in">
                     <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
                         <div className="flex items-center justify-between pb-2 border-b border-slate-800">
                             <h3 className="text-sm font-bold text-white">QR Code Preview</h3>
@@ -667,7 +668,7 @@ const AdminDashboard = () => {
 
             {/* Delete Confirmation Modal */}
             {deleteModal && (
-                <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+                <div className="fixed inset-0 z-50 bg-black/80  flex items-center justify-center p-4 animate-fade-in">
                     <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full text-left space-y-4 shadow-2xl">
                         <div className="flex items-start gap-3">
                             <div className="w-10 h-10 rounded-2xl bg-red-950 text-red-400 border border-red-800/80 flex items-center justify-center shrink-0">

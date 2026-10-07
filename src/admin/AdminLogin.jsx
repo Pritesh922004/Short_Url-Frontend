@@ -62,7 +62,7 @@ const AdminLogin = () => {
                 </div>
 
                 {/* Login Card */}
-                <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-7 sm:p-9 shadow-2xl shadow-black/50">
+                <div className="bg-slate-900/90  border border-slate-800 rounded-3xl p-7 sm:p-9 shadow-2xl shadow-black/50">
                     <div className="flex items-center justify-between pb-5 mb-5 border-b border-slate-800/80">
                         <div>
                             <h2 className="text-lg font-bold text-white tracking-tight">Root Authentication</h2>

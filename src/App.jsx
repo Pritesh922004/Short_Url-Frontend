@@ -7,10 +7,12 @@ import Analytics_page from './pages/Analytics_page';
 import Features_page from './pages/Features_page';
 import Pricing_page from './pages/Pricing_page';
 import FAQ_page from './pages/FAQ_page';
+import AiTools_page from './pages/AiTools_page';
 import NotFound_page from './pages/NotFound_page';
 import ProtectedRoutes from './utilities/ProtectRoutes.jsx';
 import NoNavbar from './utilities/NoNavbar.jsx';
 import NavbarRoutes from './utilities/NavbarRoutes.jsx';
+import SmoothScroll from './utilities/SmoothScroll.jsx';
 
 import AdminLogin from './admin/AdminLogin.jsx';
 import AdminDashboard from './admin/AdminDashboard.jsx';
@@ -18,38 +20,41 @@ import AdminProtectRoute from './admin/AdminProtectRoute.jsx';
 
 const App = () => {
   return (
-    <Routes>
-      {/* Admin Routes */}
-      <Route path='/admin/login' element={<AdminLogin />} />
-      <Route element={<AdminProtectRoute />}>
-        <Route path='/admin' element={<AdminDashboard />} />
-        <Route path='/admin/dashboard' element={<AdminDashboard />} />
-      </Route>
-
-      {/* User Auth */}
-      <Route element={<NoNavbar />}>
-        <Route path='/auth' element={<Auth_page />} />
-        <Route path='/forgot-password' element={<Auth_page defaultView="forgot" />} />
-        <Route path='/reset-password' element={<Auth_page defaultView="forgot" />} />
-      </Route>
-
-      {/* Public & User Protected Routes */}
-      <Route element={<NavbarRoutes />}>
-        <Route path='/' element={<Home_page />} />
-        <Route path='/features' element={<Features_page />} />
-        {/* <Route path='/pricing' element={<Pricing_page />} /> */}
-        <Route path='/faq' element={<FAQ_page />} />
-        
-        {/* Protected Authenticated Routes */}
-        <Route element={<ProtectedRoutes />}>
-          <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/analytics' element={<Analytics_page />} />
+    <SmoothScroll>
+      <Routes>
+        {/* Admin Routes */}
+        <Route path='/admin/login' element={<AdminLogin />} />
+        <Route element={<AdminProtectRoute />}>
+          <Route path='/admin' element={<AdminDashboard />} />
+          <Route path='/admin/dashboard' element={<AdminDashboard />} />
         </Route>
 
-        {/* 404 Catch-All */}
-        <Route path='*' element={<NotFound_page />} />
-      </Route>
-    </Routes>
+        {/* User Auth */}
+        <Route element={<NoNavbar />}>
+          <Route path='/auth' element={<Auth_page />} />
+          <Route path='/forgot-password' element={<Auth_page defaultView="forgot" />} />
+          <Route path='/reset-password' element={<Auth_page defaultView="forgot" />} />
+        </Route>
+
+        {/* Public & User Protected Routes */}
+        <Route element={<NavbarRoutes />}>
+          <Route path='/' element={<Home_page />} />
+          <Route path='/features' element={<Features_page />} />
+          <Route path='/ai-hub' element={<AiTools_page />} />
+          {/* <Route path='/pricing' element={<Pricing_page />} /> */}
+          <Route path='/faq' element={<FAQ_page />} />
+          
+          {/* Protected Authenticated Routes */}
+          <Route element={<ProtectedRoutes />}>
+            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/analytics' element={<Analytics_page />} />
+          </Route>
+
+          {/* 404 Catch-All */}
+          <Route path='*' element={<NotFound_page />} />
+        </Route>
+      </Routes>
+    </SmoothScroll>
   );
 };
 

@@ -11,7 +11,7 @@ const NotFound_page = () => {
             <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-10 right-1/4 w-72 h-72 bg-blue-200/25 rounded-full blur-2xl pointer-events-none" />
 
-            <div className="max-w-md w-full text-center space-y-6 relative z-10 bg-white/80 backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/50">
+            <div className="max-w-md w-full text-center space-y-6 relative z-10 bg-white/80  p-8 sm:p-10 rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/50">
                 {/* 404 Badge & Graphic */}
                 <div className="relative inline-block">
                     <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-indigo-600 to-blue-500 text-white font-extrabold text-4xl flex items-center justify-center mx-auto shadow-lg shadow-indigo-500/25 transform hover:rotate-3 transition-transform duration-300">

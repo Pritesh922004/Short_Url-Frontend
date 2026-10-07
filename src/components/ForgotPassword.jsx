@@ -227,7 +227,7 @@ const ForgotPassword = ({ state }) => {
 
     return (
         <div className="w-full max-w-md mx-auto">
-            <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/70 border border-slate-200/80 p-8 sm:p-10 animate-fade-in backdrop-blur-sm">
+            <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/70 border border-slate-200/80 p-8 sm:p-10 animate-fade-in ">
                 
                 {/* Brand Logo Header */}
                 <div className="text-center mb-6">

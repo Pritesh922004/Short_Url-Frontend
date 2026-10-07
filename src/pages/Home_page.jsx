@@ -156,6 +156,60 @@ const Home_page = () => {
                         </div>
                     </div>
 
+                    {/* AI Hub Feature Highlight */}
+                    <div className="mt-16 p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-indigo-50 via-white to-purple-50 border border-indigo-100 shadow-sm relative overflow-hidden group">
+                        <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-200/50 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-[10px] font-bold tracking-wider uppercase mb-4 shadow-sm">
+                                    <span className="animate-pulse">✨</span>
+                                    <span>New Release</span>
+                                </div>
+                                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-3">
+                                    Introducing the <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">LinkVault AI Hub</span>
+                                </h3>
+                                <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                                    Supercharge your productivity with our integrated AI suite. Instantly review and refactor code, detect vulnerabilities, and translate PDF documents into multiple languages—all powered by advanced AI models.
+                                </p>
+                                <ul className="space-y-3 mb-6">
+                                    <li className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                                        <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">✓</div>
+                                        Instant AI Code Reviews
+                                    </li>
+                                    <li className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                                        <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">✓</div>
+                                        Smart Document Translation
+                                    </li>
+                                </ul>
+                                <Link
+                                    to="/ai-hub"
+                                    className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-bold text-xs bg-slate-900 hover:bg-slate-800 text-white shadow-lg transition-all duration-200 active:scale-[0.98] gap-2"
+                                >
+                                    <span>Explore AI Hub</span>
+                                    <span className="text-lg">🚀</span>
+                                </Link>
+                            </div>
+                            <div className="hidden md:flex justify-center items-center">
+                                <div className="relative w-full max-w-sm aspect-square bg-gradient-to-br from-slate-800 to-slate-950 rounded-2xl shadow-2xl overflow-hidden border border-slate-700 p-6 flex flex-col justify-between">
+                                    <div className="flex gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-rose-500"></div>
+                                        <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                                        <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                                    </div>
+                                    <div className="text-[10px] font-mono text-emerald-400 space-y-2 opacity-80">
+                                        <p>&gt; Initializing AI Models...</p>
+                                        <p>&gt; Analyzing architecture...</p>
+                                        <p className="text-indigo-300">&gt; Generating optimization report...</p>
+                                        <p className="text-emerald-300 mt-4">✔ Code Review Complete. Score: 95/100</p>
+                                    </div>
+                                    <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden mt-4">
+                                        <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 w-11/12"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* CTA Card */}
                     {!isAuthenticated && (
                         <div className="mt-16 p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white text-center relative overflow-hidden shadow-xl">

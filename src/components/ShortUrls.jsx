@@ -472,7 +472,7 @@ const ShortUrls = () => {
       {qrModalUrl && (
         <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
           <div
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-slate-900/40  transition-opacity"
             onClick={() => setQrModalUrl(null)}
           ></div>
           <div className="relative bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 animate-fade-in text-center z-10">
@@ -523,7 +523,7 @@ const ShortUrls = () => {
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
           <div
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-slate-900/40  transition-opacity"
             onClick={() => !deleteLoading && setDeleteConfirm(null)}
           ></div>
           <div className="relative bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-fade-in z-10">
