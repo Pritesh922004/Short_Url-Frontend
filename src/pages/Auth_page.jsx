@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useLocation } from 'react-router';
+import { useSearchParams, useLocation, Navigate } from 'react-router';
+import { useSelector } from 'react-redux';
 import SigninForm from '../components/SigninForm';
 import SignupForm from '../components/SignupForm';
 import ForgotPassword from '../components/ForgotPassword';
 
 const Auth_page = ({ defaultView }) => {
+    const { isAuthenticated } = useSelector((state) => state.Auth);
     const [searchParams] = useSearchParams();
     const location = useLocation();
 
@@ -31,6 +33,11 @@ const Auth_page = ({ defaultView }) => {
             else if (queryMode === 'signin') setView('signin');
         }
     }, [defaultView, searchParams]);
+
+    // If user is already authenticated, redirect straight to dashboard
+    if (isAuthenticated) {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     const handleStateChange = (newView) => {
         if (typeof newView === 'boolean') {
