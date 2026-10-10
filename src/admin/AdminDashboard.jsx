@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, Link } from 'react-router';
 import {
     AdminGetStatsApi,
@@ -636,9 +637,9 @@ const AdminDashboard = () => {
             </main>
 
             {/* QR Code Modal */}
-            {qrModalUrl && (
-                <div className="fixed inset-0 z-50 bg-black/80  flex items-center justify-center p-4 animate-fade-in">
-                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
+            {qrModalUrl && createPortal(
+                <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl animate-fade-in">
                         <div className="flex items-center justify-between pb-2 border-b border-slate-800">
                             <h3 className="text-sm font-bold text-white">QR Code Preview</h3>
                             <button
@@ -663,13 +664,14 @@ const AdminDashboard = () => {
                             Close
                         </button>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Delete Confirmation Modal */}
-            {deleteModal && (
-                <div className="fixed inset-0 z-50 bg-black/80  flex items-center justify-center p-4 animate-fade-in">
-                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full text-left space-y-4 shadow-2xl">
+            {deleteModal && createPortal(
+                <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full text-left space-y-4 shadow-2xl animate-fade-in">
                         <div className="flex items-start gap-3">
                             <div className="w-10 h-10 rounded-2xl bg-red-950 text-red-400 border border-red-800/80 flex items-center justify-center shrink-0">
                                 ⚠️
@@ -708,7 +710,8 @@ const AdminDashboard = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Toast Notification */}

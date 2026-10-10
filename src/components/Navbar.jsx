@@ -178,7 +178,7 @@ const Navbar = () => {
               onClick={() => setIsOpen(!isOpen)}
               className={`p-0.5 rounded-2xl transition-all duration-300 ${
                 isOpen
-                  ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-md shadow-purple-500/30'
+                  ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-md shadow-purple-500/30 '
                   : 'bg-transparent'
               }`}
               aria-label="Toggle menu"
@@ -215,7 +215,7 @@ const Navbar = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden overflow-hidden bg-white shadow-2xl border-b border-slate-200/80 relative"
+            className="md:hidden overflow-hidden bg-white shadow-2xl border-b border-slate-200/80 relative mt-3"
           >
             {/* Shimmering Glitter Accent Top Line */}
             <motion.div
