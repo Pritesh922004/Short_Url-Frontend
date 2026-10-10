@@ -215,7 +215,11 @@ const Navbar = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+<<<<<<< HEAD
             className="md:hidden overflow-hidden bg-white shadow-2xl border-b border-slate-200/80 relative mt-3"
+=======
+            className="md:hidden overflow-hidden bg-white shadow-2xl border-b border-slate-200/80 relative m-3"
+>>>>>>> a6603fa5b60cb1ea820c0d337dfa3e3ca671187c
           >
             {/* Shimmering Glitter Accent Top Line */}
             <motion.div
