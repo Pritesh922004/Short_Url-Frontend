@@ -223,7 +223,7 @@ const Navbar = () => {
               animate={{ scaleX: 1 }}
               exit={{ scaleX: 0 }}
               transition={{ duration: 0.4 }}
-              className="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 w-full origin-left"
+              className="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 w-full origin-left m-3"
             />
 
             <motion.div
