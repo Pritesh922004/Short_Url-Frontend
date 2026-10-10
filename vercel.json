@@ -32,7 +32,7 @@
     ],
     "rewrites": [
     {
-      "source": "/r/:slug",
+      "source": "/:slug",
       "destination": "https://linkvault-backend-xmlt.onrender.com/:slug"
     },
     {
