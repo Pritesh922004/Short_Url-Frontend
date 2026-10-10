@@ -33,11 +33,11 @@
     "rewrites": [
     {
       "source": "/r/:slug",
-      "destination": "https://your-backend-url.vercel.app/:slug"
+      "destination": "https://linkvault-backend-xmlt.onrender.com/:slug"
     },
     {
       "source": "/api/:path*",
-      "destination": "https://your-backend-url.vercel.app/:path*"
+      "destination": "https://linkvault-backend-xmlt.onrender.com/:path*"
     },
     {
       "source": "/(.*)",
