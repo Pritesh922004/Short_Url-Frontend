@@ -11,6 +11,12 @@
   }
 }
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /* Custom subtle scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -57,4 +63,4 @@
 
 .animate-pulse-glow {
   animation: pulseGlow 3s infinite ease-in-out;
-}
+}
