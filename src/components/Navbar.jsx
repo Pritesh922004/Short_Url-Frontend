@@ -36,7 +36,7 @@ const Navbar = () => {
     } finally {
       localStorage.removeItem('token');
       dispatch(logout());
-      window.location.reload();
+      window.location.href = '/';
     }
   };
 
