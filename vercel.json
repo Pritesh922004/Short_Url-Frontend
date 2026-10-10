@@ -31,9 +31,17 @@
         }
     ],
     "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/index.html"
-        }
+    {
+      "source": "/r/:slug",
+      "destination": "https://your-backend-url.vercel.app/:slug"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://your-backend-url.vercel.app/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
     ]
 }
