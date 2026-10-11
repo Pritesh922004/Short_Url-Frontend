@@ -68,8 +68,8 @@ Generated: ${new Date().toLocaleString()}`;
     };
 
     const getFullShortUrl = (shortSlug) => {
-        const domain = import.meta.env.VITE_Domain || window.location.origin + '/';
-        return domain.endsWith('/') ? domain + shortSlug : domain + '/' + shortSlug;
+        const origin = window.location.origin;
+        return `${origin}/r/${shortSlug}`;
     };
 
     return (

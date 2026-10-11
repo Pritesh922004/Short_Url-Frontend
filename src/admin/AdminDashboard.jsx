@@ -94,10 +94,9 @@ const AdminDashboard = () => {
         }
     };
 
-    const backendDomain = (import.meta.env.VITE_Domain || 'http://localhost:3000/').trim();
     const getFullShortUrl = (slug) => {
-        const base = backendDomain.endsWith('/') ? backendDomain : `${backendDomain}/`;
-        return `${base}${slug}`;
+        const origin = window.location.origin;
+        return `${origin}/r/${slug}`;
     };
 
     // Filtered lists

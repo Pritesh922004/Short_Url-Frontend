@@ -31,17 +31,21 @@
         }
     ],
     "rewrites": [
-    {
-      "source": "/:slug",
-      "destination": "https://linkvault-b.vercel.app/:slug"
-    },
-    {
-      "source": "/api/:path*",
-      "destination": "https://linkvault-b.vercel.app/:path*"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+      {
+        "source": "/r/:slug",
+        "destination": "https://linkvault-b.vercel.app/:slug"
+      },
+      {
+        "source": "/s/:slug",
+        "destination": "https://linkvault-b.vercel.app/:slug"
+      },
+      {
+        "source": "/api/:path*",
+        "destination": "https://linkvault-b.vercel.app/:path*"
+      },
+      {
+        "source": "/(.*)",
+        "destination": "/index.html"
+      }
     ]
 }
