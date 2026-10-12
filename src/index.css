@@ -59,6 +59,8 @@ html.lenis, html.lenis body {
     linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 32px 32px;
+  background-attachment: local;
+  transform: translateZ(0);
 }
 
 .cyber-grid-light {
@@ -66,42 +68,78 @@ html.lenis, html.lenis body {
     linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
+  background-attachment: local;
+  transform: translateZ(0);
+}
+
+/* Zero-Gaussian Blur Hardware-Accelerated Ambient Glows (Ultra-Performance) */
+.ambient-glow-indigo {
+  background: radial-gradient(circle closest-side, rgba(99, 102, 241, 0.16) 0%, rgba(99, 102, 241, 0) 100%);
+  transform: translateZ(0);
+  pointer-events: none;
+  contain: strict;
+  will-change: transform;
+}
+
+.ambient-glow-cyan {
+  background: radial-gradient(circle closest-side, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0) 100%);
+  transform: translateZ(0);
+  pointer-events: none;
+  contain: strict;
+  will-change: transform;
+}
+
+.ambient-glow-purple {
+  background: radial-gradient(circle closest-side, rgba(168, 85, 247, 0.14) 0%, rgba(168, 85, 247, 0) 100%);
+  transform: translateZ(0);
+  pointer-events: none;
+  contain: strict;
+  will-change: transform;
+}
+
+.ambient-glow-rose {
+  background: radial-gradient(circle closest-side, rgba(244, 63, 94, 0.16) 0%, rgba(244, 63, 94, 0) 100%);
+  transform: translateZ(0);
+  pointer-events: none;
+  contain: strict;
+  will-change: transform;
 }
 
 /* Elite Glassmorphism Utility Classes */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  transform: translateZ(0);
 }
 
 .glass-panel-light {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  transform: translateZ(0);
 }
 
 .glass-card-hover {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+  transform: translateZ(0);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
 }
 
 .glass-card-hover:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px) translateZ(0);
   border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.12);
+  box-shadow: 0 10px 24px -8px rgba(99, 102, 241, 0.12);
 }
 
 /* Hardware-Accelerated Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -110,7 +148,7 @@ html.lenis, html.lenis body {
     box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
   }
   50% {
-    box-shadow: 0 0 30px rgba(6, 182, 212, 0.35);
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.28);
   }
 }
 
@@ -124,7 +162,7 @@ html.lenis, html.lenis body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.2s ease-out forwards;
 }
 
 .animate-pulse-glow {
@@ -134,3 +172,4 @@ html.lenis, html.lenis body {
 .animate-scanline {
   animation: scanline 8s linear infinite;
 }
+

@@ -14,10 +14,10 @@ const Pricing_page = () => {
                 description="Explore LinkVault's flexible plans with zero-trust threat scanning, AI Hub utilities, custom slugs, and real-time click analytics." 
             />
 
-            {/* Ambient Cyber Beams */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[380px] pointer-events-none -z-10">
-                <div className="absolute top-[-30px] left-1/3 w-80 h-80 bg-cyan-400/10 rounded-full blur-[100px]" />
-                <div className="absolute top-[20px] right-1/3 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px]" />
+            {/* Ultra-Performance Hardware-Accelerated Ambient Beams */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[380px] pointer-events-none -z-10 overflow-hidden">
+                <div className="absolute top-[-30px] left-1/3 w-[380px] h-[380px] rounded-full ambient-glow-cyan" />
+                <div className="absolute top-[20px] right-1/3 w-[380px] h-[380px] rounded-full ambient-glow-indigo" />
             </div>
 
             <div className="max-w-7xl mx-auto space-y-14 animate-fade-in relative z-10">
@@ -66,7 +66,7 @@ const Pricing_page = () => {
                 {/* Pricing Cards Grid with Glass Card Styling */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {/* Free Plan */}
-                    <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 border border-slate-200/90 shadow-sm glass-card-hover flex flex-col justify-between">
+                    <div className="bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div>
                             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Free Tier</span>
                             <h3 className="text-xl font-black text-slate-900 mt-1">Community Starter</h3>
@@ -111,8 +111,8 @@ const Pricing_page = () => {
                         </div>
                     </div>
 
-                    {/* Pro Plan (Highlighted Glass Card) */}
-                    <div className="bg-white/95 backdrop-blur-2xl rounded-3xl p-8 border-2 border-indigo-600 shadow-2xl shadow-indigo-500/15 glass-card-hover flex flex-col justify-between relative">
+                    {/* Pro Plan (Highlighted Card) */}
+                    <div className="bg-white rounded-3xl p-8 border-2 border-indigo-600 shadow-xl shadow-indigo-500/10 hover:shadow-2xl transition-all duration-200 flex flex-col justify-between relative">
                         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 via-cyan-600 to-purple-600 text-white text-[10px] font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md">
                             Most Popular &bull; Developer Choice
                         </div>
@@ -164,7 +164,7 @@ const Pricing_page = () => {
                     </div>
 
                     {/* Enterprise Plan */}
-                    <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 border border-slate-200/90 shadow-sm glass-card-hover flex flex-col justify-between">
+                    <div className="bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div>
                             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Enterprise</span>
                             <h3 className="text-xl font-black text-slate-900 mt-1">Campus &amp; Scale</h3>

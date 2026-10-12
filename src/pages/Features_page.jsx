@@ -14,10 +14,10 @@ const Features_page = () => {
                 description="Explore LinkVault's Zero-Trust Link Inspector, Gemini AI Hub, real-time analytics, custom aliases, and instant QR codes." 
             />
 
-            {/* Ambient Cyber Beams */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[380px] pointer-events-none -z-10">
-                <div className="absolute top-[-40px] left-1/4 w-96 h-96 bg-cyan-400/10 rounded-full blur-[110px]" />
-                <div className="absolute top-[30px] right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[110px]" />
+            {/* Ultra-Performance Hardware-Accelerated Ambient Beams */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[380px] pointer-events-none -z-10 overflow-hidden">
+                <div className="absolute top-[-40px] left-1/4 w-[400px] h-[400px] rounded-full ambient-glow-cyan" />
+                <div className="absolute top-[30px] right-1/4 w-[400px] h-[400px] rounded-full ambient-glow-purple" />
             </div>
 
             <div className="max-w-7xl mx-auto space-y-16 animate-fade-in relative z-10">
@@ -39,7 +39,7 @@ const Features_page = () => {
                 </div>
 
                 {/* Interactive Deep Dive with Tabs (Featuring Inspector & AI Hub first) */}
-                <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-slate-200/90 shadow-xl p-6 sm:p-10">
+                <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xl p-6 sm:p-10">
                     <div className="flex flex-wrap items-center justify-center gap-2 pb-8 border-b border-slate-100">
                         <button
                             onClick={() => setActiveTab('inspector')}
@@ -328,9 +328,9 @@ const Features_page = () => {
                     </div>
                 </div>
 
-                {/* 3 Pillar Cards with Glass Card Hover */}
+                {/* 3 Pillar Cards with Fast Hover */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="p-6 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200/90 shadow-sm glass-card-hover space-y-3">
+                    <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all duration-200 space-y-3">
                         <div className="w-12 h-12 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center font-bold text-xl">
                             🛡️
                         </div>
@@ -343,7 +343,7 @@ const Features_page = () => {
                         </Link>
                     </div>
 
-                    <div className="p-6 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200/90 shadow-sm glass-card-hover space-y-3">
+                    <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all duration-200 space-y-3">
                         <div className="w-12 h-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xl">
                             ✨
                         </div>
@@ -356,7 +356,7 @@ const Features_page = () => {
                         </Link>
                     </div>
 
-                    <div className="p-6 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200/90 shadow-sm glass-card-hover space-y-3">
+                    <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all duration-200 space-y-3">
                         <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xl">
                             ⚡
                         </div>

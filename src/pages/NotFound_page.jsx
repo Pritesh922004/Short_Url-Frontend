@@ -11,9 +11,9 @@ const NotFound_page = () => {
             <SEO title="404 - Page Not Found | LinkVault Safe Link Gateway" description="The requested link or page does not exist on LinkVault." />
 
             {/* Ambient Beams */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full ambient-glow-cyan pointer-events-none" />
 
-            <div className="max-w-md w-full text-center space-y-6 relative z-10 bg-white/90 backdrop-blur-xl p-8 sm:p-10 rounded-3xl border border-slate-200/90 shadow-2xl shadow-slate-200/50 animate-fade-in">
+            <div className="max-w-md w-full text-center space-y-6 relative z-10 bg-white p-8 sm:p-10 rounded-3xl border border-slate-200/90 shadow-2xl shadow-slate-200/50 animate-fade-in">
                 {/* 404 Badge & Graphic */}
                 <div className="relative inline-block">
                     <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-purple-600 text-white font-black text-4xl flex items-center justify-center mx-auto shadow-xl shadow-indigo-500/25 transform hover:scale-105 transition-transform duration-200">

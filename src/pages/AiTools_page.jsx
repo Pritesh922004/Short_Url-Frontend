@@ -15,20 +15,20 @@ const AiTools_page = () => {
         description="Supercharge developer workflows with LinkVault AI Hub. Instantly review code syntax, detect bugs, and translate PDF technical documentation." 
       />
 
-      {/* Ambient Radial Cyber Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[350px] pointer-events-none -z-10">
-        <div className="absolute top-[-30px] left-1/3 w-80 h-80 bg-purple-500/10 rounded-full blur-[100px]" />
-        <div className="absolute top-[20px] right-1/3 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px]" />
+      {/* Ultra-Performance Hardware-Accelerated Ambient Beams */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[350px] pointer-events-none -z-10 overflow-hidden">
+        <div className="absolute top-[-30px] left-1/3 w-[380px] h-[380px] rounded-full ambient-glow-purple" />
+        <div className="absolute top-[20px] right-1/3 w-[380px] h-[380px] rounded-full ambient-glow-indigo" />
       </div>
 
       <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
         className="max-w-7xl mx-auto space-y-6 sm:space-y-8 relative z-10"
       >
-        {/* Top Header & Glassmorphic Navigation Tabs */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white/90 backdrop-blur-xl p-4 sm:p-6 rounded-3xl border border-slate-200/90 shadow-xl">
+        {/* Top Header & Navigation Tabs */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-3xl border border-slate-200/90 shadow-xl">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/10 to-indigo-500/10 text-purple-700 text-xs font-bold border border-purple-200/60 shadow-xs">
               <span className="animate-pulse">✨</span>

@@ -55,15 +55,15 @@ const Auth_page = ({ defaultView }) => {
                 description="Secure access to LinkVault Safe Link Gateway & Command Center." 
             />
 
-            {/* Ambient Cyber Beams */}
-            <div className="absolute -top-32 -right-32 w-96 h-96 bg-cyan-400/10 rounded-full blur-[100px] pointer-events-none"></div>
-            <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+            {/* Ultra-Performance Hardware-Accelerated Ambient Beams */}
+            <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full ambient-glow-cyan pointer-events-none"></div>
+            <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full ambient-glow-purple pointer-events-none"></div>
 
             {/* Floating Home Back Button */}
             <div className="absolute top-5 left-5 z-20">
                 <Link
                     to="/"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-slate-200/90 text-xs font-bold text-slate-700 hover:text-slate-900 shadow-xs hover:shadow-md transition-all active:scale-95"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/90 text-xs font-bold text-slate-700 hover:text-slate-900 shadow-xs hover:shadow-md transition-all active:scale-95"
                 >
                     <span>&larr; Back to Home</span>
                 </Link>

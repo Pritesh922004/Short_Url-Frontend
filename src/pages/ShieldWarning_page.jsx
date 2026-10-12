@@ -77,12 +77,12 @@ const ShieldWarning_page = () => {
         <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-4 sm:p-6 lg:p-8 cyber-grid relative overflow-hidden">
             <SEO title="⚠️ Malicious Destination Intercepted | LinkVault Shield" description="Zero-Trust quarantine warning for suspicious or phishing link." />
 
-            {/* Ambient Security Glow */}
+            {/* Ultra-Performance Hardware-Accelerated Security Glow */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-                <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-rose-600/15 blur-[140px] rounded-full"></div>
+                <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full ambient-glow-rose"></div>
             </div>
 
-            <main className="relative max-w-2xl w-full bg-slate-900/85 border border-rose-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-2xl space-y-8 animate-fade-in z-10">
+            <main className="relative max-w-2xl w-full bg-slate-900 border border-rose-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 animate-fade-in z-10">
                 {/* Header Banner */}
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
                     <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-600 to-red-700 flex items-center justify-center text-white text-3xl shadow-xl shadow-rose-600/35 shrink-0">

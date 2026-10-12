@@ -7,15 +7,15 @@ const SmoothScroll = ({ children }) => {
   const lenisRef = useRef(null);
 
   useEffect(() => {
-    // Initialize Lenis for 60fps inertial smooth scrolling
+    // Initialize Lenis for 60fps high-responsiveness smooth scrolling
     const lenis = new Lenis({
-      duration: 1.1,
+      duration: 0.6,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1.0,
-      touchMultiplier: 1.5,
+      touchMultiplier: 1.2,
       infinite: false,
     });
 

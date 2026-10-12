@@ -52,10 +52,10 @@ const LinkInspector_page = () => {
         <div className="min-h-[calc(100vh-73px)] bg-slate-950 text-slate-100 py-10 sm:py-14 px-4 sm:px-6 lg:px-8 cyber-grid relative overflow-hidden">
             <SEO title="Link Inspector | Zero-Trust Threat Evaluation Sandbox" description="Inspect any link for phishing, brand typosquatting, and malware risks in real time." />
 
-            {/* Ambient Cyber Beam Accents */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[320px] pointer-events-none -z-10">
-                <div className="absolute top-[-30px] left-1/3 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px]" />
-                <div className="absolute top-[20px] right-1/3 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px]" />
+            {/* Ultra-Performance Hardware-Accelerated Ambient Beams */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[320px] pointer-events-none -z-10 overflow-hidden">
+                <div className="absolute top-[-30px] left-1/3 w-[360px] h-[360px] rounded-full ambient-glow-cyan" />
+                <div className="absolute top-[20px] right-1/3 w-[360px] h-[360px] rounded-full ambient-glow-indigo" />
             </div>
 
             <div className="max-w-4xl mx-auto space-y-8 animate-fade-in relative z-10">
@@ -74,7 +74,7 @@ const LinkInspector_page = () => {
                 </div>
 
                 {/* Input Card */}
-                <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xl backdrop-blur-xl space-y-4">
+                <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xl space-y-4">
                     <form
                         onSubmit={(e) => {
                             e.preventDefault();
@@ -145,7 +145,7 @@ const LinkInspector_page = () => {
 
                 {/* Audit Results Report Card */}
                 {report && (
-                    <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xl backdrop-blur-xl space-y-6 animate-fade-in">
+                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xl space-y-6 animate-fade-in">
                         {/* Header Details */}
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
                             <div>

@@ -73,8 +73,14 @@ Generated: ${new Date().toLocaleString()}`;
     };
 
     return (
-        <div className="min-h-[calc(100vh-73px)] cyber-grid-light py-8 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
+        <div className="min-h-[calc(100vh-73px)] cyber-grid-light py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+            {/* Ultra-Performance Hardware-Accelerated Ambient Beams */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[360px] pointer-events-none -z-10 overflow-hidden">
+                <div className="absolute top-[-30px] left-1/4 w-[380px] h-[380px] rounded-full ambient-glow-indigo" />
+                <div className="absolute top-[20px] right-1/4 w-[380px] h-[380px] rounded-full ambient-glow-cyan" />
+            </div>
+
+            <div className="max-w-7xl mx-auto space-y-8 animate-fade-in relative z-10">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/80">
                     <div>

@@ -56,6 +56,11 @@ const FAQ_page = () => {
                 title="FAQ &amp; Help Center | LinkVault Zero-Trust Safe Link Gateway" 
                 description="Frequently asked questions about LinkVault's Zero-Trust Link Inspector, Gemini AI Hub, custom slugs, and click analytics." 
             />
+            {/* Ultra-Performance Hardware-Accelerated Ambient Beams */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[320px] pointer-events-none -z-10 overflow-hidden">
+                <div className="absolute top-[-30px] left-1/4 w-[360px] h-[360px] rounded-full ambient-glow-indigo" />
+                <div className="absolute top-[20px] right-1/4 w-[360px] h-[360px] rounded-full ambient-glow-cyan" />
+            </div>
 
             <div className="max-w-4xl mx-auto space-y-10 animate-fade-in relative z-10">
                 {/* Header */}
@@ -101,7 +106,7 @@ const FAQ_page = () => {
                             return (
                                 <div
                                     key={index}
-                                    className="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden transition-all duration-200"
+                                    className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden"
                                 >
                                     <button
                                         onClick={() => setOpenIndex(isOpen ? null : index)}
@@ -173,7 +178,7 @@ const FAQ_page = () => {
                 </div>
 
                 {/* Bottom Callout */}
-                <div className="p-6 rounded-3xl bg-white/90 backdrop-blur-md border border-slate-200/90 text-center space-y-2 shadow-xs">
+                <div className="p-6 rounded-3xl bg-white border border-slate-200/90 text-center space-y-2 shadow-xs">
                     <h3 className="text-sm font-bold text-slate-900">Ready to shorten and secure your links?</h3>
                     <p className="text-xs text-slate-500 max-w-md mx-auto">
                         Experience sub-millisecond redirection backed by zero-trust threat shielding and real-time click volume analytics.

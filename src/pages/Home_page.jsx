@@ -28,10 +28,10 @@ const Home_page = () => {
         <div className="min-h-[calc(100vh-73px)] flex flex-col justify-between cyber-grid-light relative overflow-hidden">
             <SEO title="LinkVault | Zero-Trust Safe Link Gateway & Fast URL Shortener" description="Shorten links, defend against phishing in real time, and analyze traffic with LinkVault." />
 
-            {/* Ambient Cyber Beams */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[420px] pointer-events-none -z-10">
-                <div className="absolute top-[-50px] left-1/4 w-96 h-96 bg-indigo-500/15 rounded-full blur-[110px]" />
-                <div className="absolute top-[20px] right-1/4 w-80 h-80 bg-cyan-400/15 rounded-full blur-[100px]" />
+            {/* Ultra-Performance Hardware-Accelerated Ambient Beams */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[420px] pointer-events-none -z-10 overflow-hidden">
+                <div className="absolute top-[-50px] left-1/4 w-[420px] h-[420px] rounded-full ambient-glow-indigo" />
+                <div className="absolute top-[20px] right-1/4 w-[380px] h-[380px] rounded-full ambient-glow-cyan" />
             </div>
 
             <main className="flex-1">
@@ -41,7 +41,7 @@ const Home_page = () => {
                         {/* Live Defense Beacon Pill */}
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-white border border-slate-800 shadow-md mb-6 hover:border-cyan-500/50 transition-colors">
                             <span className="flex h-2 w-2 relative">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                                <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-60"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
                             </span>
                             <span className="text-slate-300 font-mono tracking-wide text-[11px] sm:text-xs">
@@ -244,8 +244,8 @@ const Home_page = () => {
                     {/* Live Cyber Defense Sandbox & Viva Spotlight */}
                     <div className="mt-16 p-8 sm:p-12 rounded-3xl bg-slate-950 text-white border border-slate-800 shadow-2xl relative overflow-hidden">
                         <div className="absolute inset-0 cyber-grid opacity-30 pointer-events-none" />
-                        <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-[90px] pointer-events-none" />
-                        <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-[90px] pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-80 h-80 rounded-full ambient-glow-cyan pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full ambient-glow-indigo pointer-events-none" />
 
                         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                             <div className="lg:col-span-7 space-y-4">

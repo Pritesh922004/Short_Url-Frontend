@@ -74,7 +74,7 @@ const ShortUrlFrom = () => {
 
     return (
         <div className="w-full">
-            <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-200/80 p-6 sm:p-8  transition-all">
+            <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-200/80 p-6 sm:p-8">
                 <form onSubmit={Handler} className="flex flex-col gap-4">
                     {/* Destination URL Input */}
                     <div className="space-y-1.5">

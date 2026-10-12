@@ -55,10 +55,10 @@ const Navbar = () => {
 
   return (
     <header
-      className={`sticky top-0 w-full z-50 transition-all duration-300 ${
+      className={`sticky top-0 w-full z-50 transition-[background-color,border-color,box-shadow] duration-200 py-3.5 ${
         scrolled
-          ? 'bg-white/95 shadow-xs border-b border-slate-200/80 py-3'
-          : 'bg-white/90 border-b border-slate-100 py-4'
+          ? 'bg-white/95 shadow-xs border-b border-slate-200/80'
+          : 'bg-white/90 border-b border-slate-100'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -323,7 +323,7 @@ const Navbar = () => {
                     <span className="text-base">✨</span>
                     <span>AI Productivity Suite</span>
                   </div>
-                  <span className="text-[10px] bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full uppercase tracking-wider font-mono font-bold">
+                  <span className="text-[10px] bg-white/25 border border-white/20 px-2 py-0.5 rounded-full uppercase tracking-wider font-mono font-bold">
                     Gemini AI
                   </span>
                 </Link>
@@ -343,7 +343,7 @@ const Navbar = () => {
                     <span className="text-base">🛡️</span>
                     <span>Zero-Trust Link Inspector</span>
                   </div>
-                  <span className="text-[10px] bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full uppercase tracking-wider font-mono font-bold">
+                  <span className="text-[10px] bg-white/25 border border-white/20 px-2 py-0.5 rounded-full uppercase tracking-wider font-mono font-bold">
                     Sandbox
                   </span>
                 </Link>
