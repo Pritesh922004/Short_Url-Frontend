@@ -101,24 +101,29 @@ const Navbar = () => {
             </Link>
             <Link
               to="/ai-hub"
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-1 ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-1.5 border ${
                 location.pathname.startsWith('/ai-hub')
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-500/20'
-                  : 'text-indigo-600 hover:text-indigo-900 hover:bg-indigo-50/80'
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/25 border-purple-500/50'
+                  : 'bg-purple-50/80 hover:bg-purple-100 text-purple-700 border-purple-200/80 shadow-xs'
               }`}
             >
               <span>AI Hub</span>
-              <span className="text-[9px] px-1.5 py-0.2 bg-purple-500 text-white font-extrabold rounded-full animate-pulse">✨</span>
+              <span className="text-[9px] px-1.5 py-0.2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-extrabold rounded-full animate-pulse shadow-xs">
+                AI Suite
+              </span>
             </Link>
             <Link
               to="/inspector"
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors duration-150 flex items-center gap-1 ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-1.5 border ${
                 location.pathname === '/inspector'
-                  ? 'bg-indigo-50 text-indigo-700 font-bold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+                  ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-md shadow-cyan-500/25 border-cyan-500/50'
+                  : 'bg-cyan-50/80 hover:bg-cyan-100 text-cyan-800 border-cyan-200/80 shadow-xs'
               }`}
             >
               <span>🛡️ Inspector</span>
+              <span className="text-[9px] px-1.5 py-0.2 bg-cyan-600 text-white font-extrabold rounded-full animate-pulse shadow-xs">
+                Zero-Trust
+              </span>
             </Link>
             <Link
               to="/faq"
@@ -312,10 +317,15 @@ const Navbar = () => {
               >
                 <Link
                   to="/ai-hub"
-                  className={`block py-2.5 px-4 rounded-xl text-xs font-extrabold transition-all bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-md shadow-purple-500/20 flex items-center justify-between`}
+                  className={`block py-3 px-4 rounded-2xl text-xs font-extrabold transition-all bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 text-white shadow-lg shadow-purple-500/25 flex items-center justify-between border border-purple-400/40`}
                 >
-                  <span>✨ AI Hub Suite</span>
-                  <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full uppercase tracking-wider">New</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">✨</span>
+                    <span>AI Productivity Suite</span>
+                  </div>
+                  <span className="text-[10px] bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full uppercase tracking-wider font-mono font-bold">
+                    Gemini AI
+                  </span>
                 </Link>
               </motion.div>
 
@@ -327,11 +337,15 @@ const Navbar = () => {
               >
                 <Link
                   to="/inspector"
-                  className={`block py-2.5 px-4 rounded-xl text-xs font-bold transition-all ${
-                    location.pathname === '/inspector' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-100'
-                  }`}
+                  className={`block py-3 px-4 rounded-2xl text-xs font-extrabold transition-all bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg shadow-cyan-500/25 flex items-center justify-between border border-cyan-400/40`}
                 >
-                  🛡️ Threat Inspector
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">🛡️</span>
+                    <span>Zero-Trust Link Inspector</span>
+                  </div>
+                  <span className="text-[10px] bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full uppercase tracking-wider font-mono font-bold">
+                    Sandbox
+                  </span>
                 </Link>
               </motion.div>
               <motion.div
