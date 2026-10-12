@@ -16,6 +16,7 @@ const ShortUrls = () => {
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
   const [qrModalUrl, setQrModalUrl] = useState(null);
+  const [auditModalItem, setAuditModalItem] = useState(null);
 
   // Fetch URLs on component mount
   useEffect(() => {
@@ -289,6 +290,9 @@ const ShortUrls = () => {
                       Original URL
                     </th>
                     <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Security
+                    </th>
+                    <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                       Clicks
                     </th>
                     <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -342,6 +346,26 @@ const ShortUrls = () => {
                           </div>
                         </td>
 
+                        {/* Security Threat Status */}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {url.threatScore >= 65 || url.isQuarantined ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-700 border border-red-200" title={`Threat Score: ${url.threatScore}/100`}>
+                              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                              <span>Quarantined</span>
+                            </span>
+                          ) : url.threatScore >= 30 ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800 border border-amber-200" title={`Threat Score: ${url.threatScore}/100`}>
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                              <span>Suspicious</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200" title="Zero Threats Detected">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                              <span>Verified Safe</span>
+                            </span>
+                          )}
+                        </td>
+
                         {/* Clicks */}
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700">
@@ -357,6 +381,15 @@ const ShortUrls = () => {
                         {/* Action buttons */}
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                           <div className="flex items-center justify-end gap-1.5">
+                            {/* Security Audit Trigger */}
+                            <button
+                              onClick={() => setAuditModalItem(url)}
+                              className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
+                              title="View AI Threat Audit"
+                            >
+                              <span className="text-xs">🛡️</span>
+                            </button>
+
                             {/* QR Modal Trigger */}
                             <button
                               onClick={() => setQrModalUrl(fullShortUrl)}
@@ -417,13 +450,35 @@ const ShortUrls = () => {
                       </span>
                     </div>
 
-                    <div className="text-xs text-slate-500 truncate" title={url.Url}>
-                      {truncateUrl(url.Url, 40)}
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="text-slate-500 truncate max-w-[200px]" title={url.Url}>
+                        {truncateUrl(url.Url, 32)}
+                      </div>
+                      {url.threatScore >= 65 || url.isQuarantined ? (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700">
+                          🚨 Quarantined
+                        </span>
+                      ) : url.threatScore >= 30 ? (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800">
+                          ⚠️ Suspicious
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
+                          🛡️ Safe
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center justify-between pt-1 text-xs text-slate-400">
                       <span>{formatDate(url.createdAt)}</span>
                       <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setAuditModalItem(url)}
+                          className="p-1 bg-slate-100 text-slate-700 rounded-md text-xs cursor-pointer"
+                          title="Security Threat Audit"
+                        >
+                          🛡️
+                        </button>
                         <button
                           onClick={() => handleCopy(fullShortUrl, url._id)}
                           className={`px-2 py-1 rounded-md text-xs font-medium transition-colors ${
@@ -569,6 +624,91 @@ const ShortUrls = () => {
                 ) : (
                   'Delete Link'
                 )}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Security Threat Audit Modal */}
+      {auditModalItem && createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+            onClick={() => setAuditModalItem(null)}
+          ></div>
+          <div className="relative bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 animate-fade-in z-10 space-y-5">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🛡️</span>
+                <h3 className="text-base font-bold text-slate-900">Security Threat Audit</h3>
+              </div>
+              <button
+                onClick={() => setAuditModalItem(null)}
+                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Target URL */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Destination</span>
+              <p className="text-xs font-mono text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-200 break-all select-all">
+                {auditModalItem.Url}
+              </p>
+            </div>
+
+            {/* Score & Verdict Banner */}
+            <div className="grid grid-cols-3 gap-3 text-center">
+              <div className={`p-3 rounded-2xl border ${
+                auditModalItem.threatScore >= 65 ? 'bg-red-50 border-red-200 text-red-700' :
+                auditModalItem.threatScore >= 30 ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                'bg-emerald-50 border-emerald-200 text-emerald-700'
+              }`}>
+                <span className="text-[10px] uppercase font-bold tracking-wider opacity-75">Threat Score</span>
+                <div className="text-2xl font-black mt-0.5">{auditModalItem.threatScore || 0}<span className="text-xs font-normal">/100</span></div>
+              </div>
+
+              <div className="p-3 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Category</span>
+                <div className="text-sm font-bold mt-1 truncate">{auditModalItem.threatCategory || 'Safe'}</div>
+              </div>
+
+              <div className="p-3 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Policy</span>
+                <div className={`text-sm font-bold mt-1 ${auditModalItem.isQuarantined ? 'text-red-600' : 'text-emerald-600'}`}>
+                  {auditModalItem.isQuarantined ? 'Quarantined' : 'Clean'}
+                </div>
+              </div>
+            </div>
+
+            {/* Threat Details */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Security Findings</span>
+              <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                {auditModalItem.threatDetails && auditModalItem.threatDetails.length > 0 ? (
+                  auditModalItem.threatDetails.map((flag, idx) => (
+                    <div key={idx} className="flex items-start gap-2 p-2 rounded-xl bg-slate-50 text-xs text-slate-700 border border-slate-100">
+                      <span>{auditModalItem.threatScore >= 65 ? '🔴' : auditModalItem.threatScore >= 30 ? '🟡' : '🟢'}</span>
+                      <span className="leading-relaxed">{flag}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-xs text-slate-500">Verified legitimate domain. No anomaly flags detected.</p>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setAuditModalItem(null)}
+                className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+              >
+                Close Audit
               </button>
             </div>
           </div>

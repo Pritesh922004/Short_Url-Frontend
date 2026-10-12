@@ -12,6 +12,7 @@ const ShortUrlFrom = () => {
     const [copied, setCopied] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [showQR, setShowQR] = useState(false);
+    const [threatInfo, setThreatInfo] = useState(null);
 
     // Get authentication state from Redux
     const { isAuthenticated } = useSelector(state => state.Auth);
@@ -25,6 +26,11 @@ const ShortUrlFrom = () => {
             // Pass the custom slug if it's provided by an authenticated user
             const { data } = await CreateShortUrl(longUrl, customSlug);
             setShortUrl(data.ShortUrl);
+            setThreatInfo({
+                score: data.threatScore ?? 0,
+                category: data.threatCategory ?? 'Safe',
+                quarantined: Boolean(data.isQuarantined)
+            });
             setCopied(false);
             setShowQR(false);
 
@@ -57,6 +63,7 @@ const ShortUrlFrom = () => {
         setLongUrl('');
         setCustomSlug('');
         setShortUrl('');
+        setThreatInfo(null);
         setError('');
         setShowQR(false);
     };
@@ -179,15 +186,30 @@ const ShortUrlFrom = () => {
                 {/* Success / Result Section */}
                 {shortUrl && (
                     <div className="mt-6 pt-6 border-t border-slate-200/80 animate-fade-in space-y-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-1.5">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex flex-wrap items-center gap-2">
                                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
                                     Ready to Share
                                 </span>
+                                {threatInfo && (
+                                    threatInfo.quarantined ? (
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-700 border border-red-200">
+                                            🚨 Threat Quarantined ({threatInfo.score}/100)
+                                        </span>
+                                    ) : threatInfo.score >= 30 ? (
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800 border border-amber-200">
+                                            ⚠️ Suspicious ({threatInfo.score}/100)
+                                        </span>
+                                    ) : (
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                            🛡️ AI Verified Safe
+                                        </span>
+                                    )
+                                )}
                             </div>
                             <button
                                 onClick={resetForm}
-                                className="text-xs font-medium text-slate-500 hover:text-indigo-600 transition-colors"
+                                className="text-xs font-medium text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer"
                             >
                                 + Shorten another link
                             </button>

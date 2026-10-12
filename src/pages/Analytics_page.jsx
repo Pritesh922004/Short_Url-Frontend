@@ -73,16 +73,17 @@ Generated: ${new Date().toLocaleString()}`;
     };
 
     return (
-        <div className="min-h-[calc(100vh-73px)] bg-slate-50/50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-[calc(100vh-73px)] cyber-grid-light py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
                 {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200/80">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/80">
                     <div>
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100 mb-2">
-                            <span>Real-Time Performance</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
+                            <span>Real-Time Traffic &amp; Threat Intelligence</span>
                         </div>
-                        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-                            URL Analytics & Insights
+                        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">
+                            URL Analytics &amp; Insights
                         </h1>
                         <p className="text-xs sm:text-sm text-slate-500 mt-1">
                             Analyze click volumes, top performing aliases, and user engagement trends.

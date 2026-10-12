@@ -28,19 +28,48 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #334155;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #475569;
+}
+
+/* Cyber SaaS Background Grid & Beam Patterns */
+.cyber-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.cyber-grid-light {
+  background-image: 
+    linear-gradient(to right, rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 /* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -50,10 +79,19 @@ body {
 
 @keyframes pulseGlow {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
   }
   50% {
-    box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.35);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(1000%);
   }
 }
 
@@ -63,4 +101,8 @@ body {
 
 .animate-pulse-glow {
   animation: pulseGlow 3s infinite ease-in-out;
+}
+
+.animate-scanline {
+  animation: scanline 8s linear infinite;
 }

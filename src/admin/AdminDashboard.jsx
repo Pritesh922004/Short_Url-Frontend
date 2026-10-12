@@ -519,6 +519,7 @@ const AdminDashboard = () => {
                                                 <tr>
                                                     <th className="py-3.5 px-4">Short Link</th>
                                                     <th className="py-3.5 px-4">Destination Target</th>
+                                                    <th className="py-3.5 px-4">Security</th>
                                                     <th className="py-3.5 px-4">Creator</th>
                                                     <th className="py-3.5 px-4">Clicks</th>
                                                     <th className="py-3.5 px-4">Created</th>
@@ -566,6 +567,24 @@ const AdminDashboard = () => {
                                                                     >
                                                                         {item.Url}
                                                                     </a>
+                                                                </td>
+                                                                <td className="py-3.5 px-4">
+                                                                    {item.isQuarantined || (item.threatScore && item.threatScore >= 65) ? (
+                                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-950/80 text-red-400 border border-red-800/60">
+                                                                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                                                            Quarantined ({item.threatScore || 85})
+                                                                        </span>
+                                                                    ) : item.threatScore && item.threatScore > 20 ? (
+                                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-950/80 text-amber-400 border border-amber-800/60">
+                                                                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                                                            Suspicious ({item.threatScore})
+                                                                        </span>
+                                                                    ) : (
+                                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-800/60">
+                                                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                                            Safe ({item.threatScore ?? 0})
+                                                                        </span>
+                                                                    )}
                                                                 </td>
                                                                 <td className="py-3.5 px-4">
                                                                     {item.User ? (
@@ -620,7 +639,7 @@ const AdminDashboard = () => {
                                                     })
                                                 ) : (
                                                     <tr>
-                                                        <td colSpan="6" className="py-8 text-center text-slate-500">
+                                                        <td colSpan="7" className="py-8 text-center text-slate-500">
                                                             No short links found matching your query.
                                                         </td>
                                                     </tr>

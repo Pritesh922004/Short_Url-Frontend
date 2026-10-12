@@ -14,12 +14,19 @@ const Navbar = () => {
   const state = isAuthenticated;
   const dispatch = useDispatch();
 
-  // Handle scroll effect
+  // Handle scroll effect with requestAnimationFrame throttle for 60fps performance
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 15);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 15);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -102,6 +109,16 @@ const Navbar = () => {
             >
               <span>AI Hub</span>
               <span className="text-[9px] px-1.5 py-0.2 bg-purple-500 text-white font-extrabold rounded-full animate-pulse">✨</span>
+            </Link>
+            <Link
+              to="/inspector"
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors duration-150 flex items-center gap-1 ${
+                location.pathname === '/inspector'
+                  ? 'bg-indigo-50 text-indigo-700 font-bold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+              }`}
+            >
+              <span>🛡️ Inspector</span>
             </Link>
             <Link
               to="/faq"
@@ -302,6 +319,21 @@ const Navbar = () => {
                 </Link>
               </motion.div>
 
+              <motion.div
+                variants={{
+                  open: { opacity: 1, y: 0 },
+                  closed: { opacity: 0, y: -8 }
+                }}
+              >
+                <Link
+                  to="/inspector"
+                  className={`block py-2.5 px-4 rounded-xl text-xs font-bold transition-all ${
+                    location.pathname === '/inspector' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-100'
+                  }`}
+                >
+                  🛡️ Threat Inspector
+                </Link>
+              </motion.div>
               <motion.div
                 variants={{
                   open: { opacity: 1, y: 0 },

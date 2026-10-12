@@ -10,4 +10,14 @@ export const FetchUrls = async () => {
 
 export const DeleteUrl = async (id) => {
     return await axios.post('delete',{id});
-}
+};
+
+export const FetchThreatAudit = async (id) => {
+    const { data } = await axios.get(`ShortUrl/audit/${id}`);
+    return data;
+};
+
+export const InspectUrlApi = async (url) => {
+    const { data } = await axios.post('ShortUrl/inspect', { url });
+    return data;
+};

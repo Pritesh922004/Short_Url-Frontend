@@ -25,31 +25,61 @@ const Home_page = () => {
     }, [dispatch]);
 
     return (
-        <div className="min-h-[calc(100vh-73px)] flex flex-col justify-between">
+        <div className="min-h-[calc(100vh-73px)] flex flex-col justify-between cyber-grid-light relative overflow-hidden">
+            <SEO title="LinkVault | Zero-Trust Safe Link Gateway & Fast URL Shortener" description="Shorten links, defend against phishing in real time, and analyze traffic with LinkVault." />
+
+            {/* Ambient Cyber Beams */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[420px] pointer-events-none -z-10">
+                <div className="absolute top-[-50px] left-1/4 w-96 h-96 bg-indigo-500/15 rounded-full blur-[110px]" />
+                <div className="absolute top-[20px] right-1/4 w-80 h-80 bg-cyan-400/15 rounded-full blur-[100px]" />
+            </div>
+
             <main className="flex-1">
                 {/* Hero Section */}
-                <section className="relative pt-8 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                    {/* Background subtle radial gradients */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-indigo-200/20 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-
-                    <div className="text-center max-w-3xl mx-auto mb-10">
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100/80 mb-5 shadow-xs">
-                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-ping"></span>
-                            <span>Lightning-Fast URL Shortener & Analytics</span>
+                <section className="relative pt-10 sm:pt-14 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                    <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-12">
+                        {/* Live Defense Beacon Pill */}
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-white border border-slate-800 shadow-md mb-6 hover:border-cyan-500/50 transition-colors">
+                            <span className="flex h-2 w-2 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                            </span>
+                            <span className="text-slate-300 font-mono tracking-wide text-[11px] sm:text-xs">
+                                ZERO-TRUST GATEWAY &amp; REAL-TIME PHISHING SHIELD
+                            </span>
+                            <span className="hidden sm:inline-block px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                                ACTIVE
+                            </span>
                         </div>
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
-                            Make every link{' '}
-                            <span className="bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 bg-clip-text text-transparent">
-                                memorable & trackable
+
+                        {/* High-Impact Headline */}
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950 leading-[1.12]">
+                            Shorten Links with{' '}
+                            <span className="bg-gradient-to-r from-indigo-600 via-cyan-600 to-indigo-700 bg-clip-text text-transparent underline decoration-cyan-400/30 decoration-wavy decoration-2">
+                                Zero-Trust Security
                             </span>
                         </h1>
-                        <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                            Create clean, compact links in seconds. Generate instant QR codes, customize aliases, and monitor real-time click engagement.
+
+                        <p className="mt-4 sm:mt-5 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                            Transform long URLs into branded, sub-millisecond redirect links backed by deterministic heuristic threat auditing, AI phishing defense, and forensic analytics.
                         </p>
+
+                        {/* Quick Action Badges */}
+                        <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-xs font-semibold text-slate-600">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/90 border border-slate-200/90 rounded-full shadow-xs">
+                                <span className="text-emerald-500">✓</span> Instant QR Engine
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/90 border border-slate-200/90 rounded-full shadow-xs">
+                                <span className="text-cyan-500">✓</span> Heuristic Typosquat Radar
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/90 border border-slate-200/90 rounded-full shadow-xs">
+                                <span className="text-indigo-500">✓</span> Custom Domain Aliases
+                            </span>
+                        </div>
                     </div>
 
                     {/* Shortener Widget Container */}
-                    <div className="max-w-xl mx-auto">
+                    <div className="max-w-2xl mx-auto relative z-10">
                         <ShortUrlFrom />
                     </div>
                 </section>
@@ -206,6 +236,63 @@ const Home_page = () => {
                                     <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden mt-4">
                                         <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 w-11/12"></div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Live Cyber Defense Sandbox & Viva Spotlight */}
+                    <div className="mt-16 p-8 sm:p-12 rounded-3xl bg-slate-950 text-white border border-slate-800 shadow-2xl relative overflow-hidden">
+                        <div className="absolute inset-0 cyber-grid opacity-30 pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-[90px] pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-[90px] pointer-events-none" />
+
+                        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div className="lg:col-span-7 space-y-4">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800/80 text-cyan-300 text-xs font-mono">
+                                    <span>🔬 LIVE EVALUATION TOOL</span>
+                                </div>
+                                <h3 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
+                                    Inspect &amp; Defend Against Malicious Links
+                                </h3>
+                                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-xl">
+                                    Evaluate typosquatting, deceptive brand impersonation, and raw IP host redirects in our public security laboratory without shortening first.
+                                </p>
+                                <div className="flex flex-wrap gap-3 pt-2">
+                                    <Link
+                                        to="/inspector"
+                                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/25 transition-all duration-200 active:scale-95"
+                                    >
+                                        <span>Open Link Inspector Sandbox</span>
+                                        <span>🛡️</span>
+                                    </Link>
+                                    <Link
+                                        to="/features"
+                                        className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-bold text-xs transition-colors"
+                                    >
+                                        <span>All Features</span>
+                                    </Link>
+                                </div>
+                            </div>
+
+                            {/* Threat Engine Visual Simulation */}
+                            <div className="lg:col-span-5 bg-slate-900/90 rounded-2xl border border-slate-800 p-5 font-mono text-xs space-y-3">
+                                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                                        <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                                        <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+                                    </div>
+                                    <span className="text-[10px] text-cyan-400">threat-scanner-v2.1</span>
+                                </div>
+                                <div className="space-y-1.5 text-[11px]">
+                                    <p className="text-slate-500">&gt; Target: paypal-login-verify.top</p>
+                                    <p className="text-cyan-300">&gt; Evaluating brand cluster: PayPal</p>
+                                    <p className="text-amber-400">&gt; High-risk TLD detected: .top (+20)</p>
+                                    <p className="text-rose-400">&gt; Brand typosquatting identified (+45)</p>
+                                    <p className="text-red-400 font-bold pt-2 border-t border-slate-800">
+                                        [STATUS] QUARANTINED (Threat Score: 100/100)
+                                    </p>
                                 </div>
                             </div>
                         </div>

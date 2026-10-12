@@ -15,6 +15,8 @@ import Pricing_page from './pages/Pricing_page';
 import FAQ_page from './pages/FAQ_page';
 import AiTools_page from './pages/AiTools_page';
 import NotFound_page from './pages/NotFound_page';
+import ShieldWarning_page from './pages/ShieldWarning_page';
+import LinkInspector_page from './pages/LinkInspector_page';
 import ProtectedRoutes from './utilities/ProtectRoutes.jsx';
 import NoNavbar from './utilities/NoNavbar.jsx';
 import NavbarRoutes from './utilities/NavbarRoutes.jsx';
@@ -88,11 +90,12 @@ const App = () => {
           <Route path='/admin/dashboard' element={<AdminDashboard />} />
         </Route>
 
-        {/* User Auth */}
+        {/* User Auth & Threat Interstitial Screen */}
         <Route element={<NoNavbar />}>
           <Route path='/auth' element={<Auth_page />} />
           <Route path='/forgot-password' element={<Auth_page defaultView="forgot" />} />
           <Route path='/reset-password' element={<Auth_page defaultView="forgot" />} />
+          <Route path='/shield/:id' element={<ShieldWarning_page />} />
         </Route>
 
         {/* Public & User Protected Routes */}
@@ -100,6 +103,7 @@ const App = () => {
           <Route path='/' element={<Home_page />} />
           <Route path='/features' element={<Features_page />} />
           <Route path='/ai-hub' element={<AiTools_page />} />
+          <Route path='/inspector' element={<LinkInspector_page />} />
           <Route path='/faq' element={<FAQ_page />} />
           {/* Protected Authenticated Routes */}
           <Route element={<ProtectedRoutes />}>
